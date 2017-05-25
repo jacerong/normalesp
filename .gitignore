@@ -1,0 +1,8 @@
+*.pyc
+*.bin
+
+normalesp/config/general.xml
+
+normalesp/datasets/eswiki/corpora/
+normalesp/datasets/eswiki/corpus/
+normalesp/datasets/eswiki/src/
