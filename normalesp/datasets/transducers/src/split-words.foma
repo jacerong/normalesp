@@ -1,0 +1,21 @@
+# author: Jhon Adrián Cerón-Guzmán
+# email: <jacerong@unal.edu.co>
+# version: 0.1
+# description: encuentra secuencias de palabras que fusionadas, es decir, que no están separadas por espacio.
+# note: el usuario final de este transductor debería preferir la secuencia de palabras más largas. Es decir, si analiza la palabra "losiento", las sugerencias son: "lo_siento", "lo_sien_to" y "lo_si_en_to"; de estas, debería preferir "lo_siente" puesto que solo inserta un separador.
+
+source tertiary_variants.foma
+
+define C [b | c | d | f | g | h | j | k | l | m | n | ñ | p | q | r | s | t | v | w | x | y | z];
+
+define Lex [StandardDicc - [[C - y] | i | ó | l l]];
+
+# Agregar "_" en cualquier posición de la palabra y los remueve cuando hay dos o más consecutivos.
+define InsertBlanks [0 -> "_" || ? _ ?] .o. ["_"+ @-> "_"];
+
+# Genera palabras que fusionadas (por el símbolo "_"), coinciden con alguna variante de la palabra de entrada (donde se han introducido "_" arbitrariamente).
+define SplitConjoinedWords TertiaryBase2Transducer .o. InsertBlanks .o. [Lex ["_" Lex]+];
+
+regex SplitConjoinedWords;
+
+save stack split-words.bin

@@ -1,0 +1,10 @@
+# author: Jhon Adrián Cerón-Guzmán
+# email: <jacerong@unal.edu.co>
+# version: 0.1
+# description: definiciones universales, es decir, que pueden ser usadas por otros transductores.
+
+define V [a | e | i | o | u | á | é | í | ó | ú | ü];
+
+define C [b | c | d | f | g | h | j | k | l | m | n | ñ | p | q | r | s | t | v | w | x | y | z];
+
+define A [V | C];

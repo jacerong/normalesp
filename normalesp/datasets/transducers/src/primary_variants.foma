@@ -1,0 +1,33 @@
+# author: Jhon Adrián Cerón-Guzmán
+# email: <jacerong@unal.edu.co>
+# version: 0.1
+# description: la generación de variantes primarias se basa en la normalización de repeticiones para realizar una búsqueda exacta de interjecciones o en el diccionario de normalización.
+
+source lengthening_normalisation.foma
+
+load stack normalisation_dicc.bin
+define Dicc;
+
+define UpperSide Dicc.u;
+define LowerSide Dicc.l;
+
+define NormalisationDicc UpperSide .o. Dicc .o. [LowerSide -> ... "_NORM" || .#. _ .#.];
+
+source interjection.foma
+
+# Errores comunes que son fácilmente normalizables.
+define CommonMisspelling [
+                          [j o e e] -> j o d e r "_NORM" ,
+                          [m u (i)] -> m u y "_NORM",
+                          [v o (i)] -> v o y "_NORM" || .#. _ .#.
+                         ];
+
+regex LengtheningNormalisation .o. [NormalisationDicc |
+                                    NormalizeInterjection |
+                                    CommonMisspelling];
+
+define PrimaryVariants;
+
+regex PrimaryVariants;
+
+save stack primary_variants.bin

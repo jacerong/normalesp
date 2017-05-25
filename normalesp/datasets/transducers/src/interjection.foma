@@ -1,0 +1,49 @@
+# author: Jhon Adrián Cerón-Guzmán
+# email: <jacerong@unal.edu.co>
+# version: 0.1
+# description: capturar las interjecciones más comunes del castellano, incluyendo emoticones formados por letras.
+
+# Interjecciones de risa.
+define InterjectionOfLaughter [
+                                ?* [[h | j] a]^>1 ?* @-> j a "_LAUGH" ,
+                                ?* [j e]^>1 ?* @-> j e "_LAUGH" ,
+                                ?* [j i]^>1 ?* @-> j i "_LAUGH" ,
+                                ?* [j o]^>1 ?* @-> j o "_LAUGH" ,
+                                ?* [j u]^>1 ?* @-> j u "_LAUGH" ,
+                                ?* [j u a]^>1 ?* @-> j u a "_LAUGH" || .#. _ .#.];
+
+# Interjecciones de emoticones, que no se componen solo por signos de puntuación.
+define Emoticon [x (%-) [d | p] -> ... "_EMO" ,
+                 d (%-) x -> ... "_EMO" ,
+                 [ò | o] [%_ | %-] [o | ó] -> ... "_EMO" ,
+                 ° o ° -> ... "_EMO" ,
+                 n %_ n -> ... "_EMO" ,
+                 ñ %_ ñ -> ... "_EMO" ,
+                 q %_ q -> ... "_EMO" ,
+                 t %_ t -> ... "_EMO" ,
+                 u %_ u -> ... "_EMO" ,
+                 v %_ v -> ... "_EMO" ,
+                 x %_ x -> ... "_EMO" ,
+                 y %_ y -> ... "_EMO" ,
+                 z %_ z -> ... "_EMO" || .#. _ .#.];
+
+# Onomatopeyas
+define Onomatopoeia [
+                     [a i] -> a y "_INTER" ,
+                     [a g] -> a h "_INTER" ,
+                     [a y]^>1 -> a y "_INTER" ,
+                     [b l [a | á] (%-)]^>1 -> b l a "_INTER" ,
+                     [e m] -> e h "_INTER" ,
+                     [m u a [c | k | c k]] -> m u a "_INTER" ,
+                     [o g] -> o h "_INTER" ,
+                     [p [i | í] o (%-)]^>1 -> p í o "_INTER" ,
+                     [p f] -> p u f "_INTER" ,
+                     [s h] -> c h i s "_INTER" ,
+                     [t i c (%-) t a c] -> t i c %+ t a c "_INTER" ,
+                     [t o c (%-)]^>1 -> t o c "_INTER" ,
+                     [t s] -> c h i s "_INTER" ,
+                     [u i] -> u y "_INTER" || .#. _ .#.];
+
+define NormalizeInterjection [InterjectionOfLaughter |
+                              Emoticon |
+                              Onomatopoeia];

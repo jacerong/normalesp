@@ -1,0 +1,52 @@
+# author: Jhon Adrián Cerón-Guzmán
+# email: <jacerong@unal.edu.co>
+# version: 0.1
+# description: extraer sufijos y prefijos comunes y verificar si la raíz está en el diccionario de formas estándar.
+
+######################################
+# ToDo:                              #
+# suffix: superlativos y diminituvos #
+######################################
+
+source lengthening_normalisation.foma
+
+define V [a | e | i | o | u];
+
+define Deaccent [á -> a , é -> e , í -> i , ó -> o , ú -> u];
+
+
+#############################################
+# Formas verbales con pronombres enclíticos #
+#############################################
+
+define Enclitic [{me} | {nos} | {te} | {tes} | {se} |
+                 {lo} | {la}  | {le} | {los} | {las} | {les}];
+
+define RemoveEnclitic [Deaccent .o. LengtheningNormalisation .o.
+                       [l l -> Y || _ V] .o.
+                       [Enclitic+ @-> 0 || _ .#.] .o.
+                       [Y -> l l]];
+
+define PreviousChanges [g u -> G || _ [e | i] ,, q u -> Q];
+
+define ReversePreviousChanges [G -> g u , Q -> q u];
+
+define AccentuateEnclitic PreviousChanges .o. Deaccent .o. [
+    [{ar} -> {ár} , {er} -> {ér} , {ir} -> {ír} || _ Enclitic^2 .#.] |
+    [a -> á , e -> é || _ {ndo} Enclitic^{1,2} .#.] |
+    [a -> á , e -> é , i -> í , o -> ó , u -> ú || _ \V* [a | e] n Enclitic^{1,2} .#.] |
+    [a -> á , e -> é , i -> í || _ [d | s]^<2 Enclitic^2 .#.] |
+    [[a -> á , e -> é , i -> í , o -> ó , u -> ú || _ [[\V^<2 V] - Enclitic] Enclitic .#.] |
+     [a -> á , e -> é , i -> í , o -> ó , u -> ú || _ {mos} Enclitic .#.] |
+     [a -> á , e -> é , i -> í , o -> ó , u -> ú || _ \V* V Enclitic^2 .#.]] |
+    [a -> á , e -> é , i -> í , o -> ó , u -> ú || .#. \V _ \V^<2 Enclitic^2 .#.]
+    ] .o. ReversePreviousChanges;
+
+
+###################################
+# Adverbios terminados en -mente  #
+###################################
+
+define RemoveMente [Deaccent .o. AtMostOneRepetition .o.
+                    [{amente} -> [a | o] || .#. ?^>1 _ .#. ,,
+                     {mente} -> 0 || .#. ?^>2 \[V - e] _ .#.]];

@@ -1,0 +1,34 @@
+# author: Jhon Adrián Cerón-Guzmán
+# email: <jacerong@unal.edu.co>
+# version: 0.1
+# description: recuperar formas a partir de su transcripción fonética.
+
+define MinimalChanges [
+                        x -> x ,, g -> g ,, "\u0263" -> "\u0263" ,,
+                        x -> g , x -> g w , x -> "\u0263" || _ [e | i | j] ,,
+                        g -> x , g -> g w || _ [e | i | j] ,,
+                        "\u0263" -> x , "\u0263" -> g w || _ [e | i | j] ,,
+                        "\u0263" u -> "\u0263" w , g u -> g w || [a | o]
+                      ] .o.
+                      [
+                        j -> j ,, j -> i ,,
+                        i -> i , i -> j || _ [a | e | o | u]
+                      ] .o.
+                      [
+                        w -> w ,,
+                        w -> u || _ [a | e | i | o]
+                      ];
+
+read spaced-text PND-gazetteer-fonemas.txt
+define PhonemesToGraphemes;
+
+read spaced-text PND-gazetteer-unidecode.txt
+define Unicode;
+
+read spaced-text PND-gazetteer-RestoreCase.txt
+define RestoreCase;
+
+define RetreivePN MinimalChanges .o. PhonemesToGraphemes;
+
+regex [RetreivePN .o. Unicode .o. RestoreCase] |
+      [RetreivePN .o. RestoreCase];

@@ -1,0 +1,16 @@
+# author: Jhon Adrián Cerón-Guzmán
+# email: <jacerong@unal.edu.co>
+# version: 0.1
+# description: algunas modificaciones a la palabra que va a ser analizada contra el diccionario. Este análisis se basa en comparación de grafemas.
+
+source lengthening_normalisation.foma
+
+define Deaccent [á -> a , é -> e , í -> i , ó -> o , ú -> u];
+
+define TreatmentForInitialH [h -> [h | 0] || .#. _ [a | e | i | o |u]];
+
+define Reaccent [?* [a:á | e:é | i:í | o:ó | u:ú]^<2 ?*];
+
+regex LengtheningNormalisation2 .o. Deaccent .o. TreatmentForInitialH .o. Reaccent;
+
+save stack dictionary_lookup.bin

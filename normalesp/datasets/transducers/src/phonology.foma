@@ -1,0 +1,173 @@
+# author: Jhon Adrián Cerón-Guzmán
+# email: <jacerong@unal.edu.co>
+# version: 0.1
+# description: Transcripción fonética de la escritura a su representación sonora.
+# reference:
+#   <https://es.wiktionary.org/wiki/Wikcionario:Referencia/ES/Pronunciación>
+#   <https://es.wiktionary.org/wiki/Wikcionario:Pronunciación>
+#   <https://es.wikipedia.org/wiki/Transcripción_fonética_del_español_con_el_AFI>
+# benchmark:
+#   <http://www.fonemolabs.com/transcriptor.html>
+#   <http://www.aucel.com/pln/transbase.html>
+# notes:
+#   1. Se implementa "seseo"  (ocurre en el 90% del mundo hispanohablante).
+#   2. Se implementa "yeísmo" (ocurre en el 90% del mundo hispanohablante).
+
+
+define V  [a | e | i | o | u];
+
+define C  [b | c | d | f | g | j | k | l | m | n | p | q | r | s | t | v | x | y | z];
+
+define C2 ["\u03b8" | "\u02a7" | X | "\u029d" | "\u0272" | "\u0283" | "\u03b2" | ð |
+           "\u0263" | "\u014b" | N | "\u0271" | "\u027e"];
+
+# 1. Remover tilde aguda en vocales.
+define PhonologyAccentedVowels [á -> a , é -> e , ó -> o];
+
+# 2. Homologar grafías por su representación en AFI que es igual en todos los contextos, y que una vez homologados, no se solapan con otras consideraciones. Se incluyen también extranjerismos.
+define Phonology0 [c h -> "\u02a7"] .o.
+                  [
+                    c c -> k "\u03b8" ,
+                    j -> X ,
+                    l l -> "\u029d" || _ [.#. | \l] ,
+                    ñ -> "\u0272" ,
+                    s h -> "\u0283" ,
+                    p h -> f || _ [a | e | i | í | o | u | ú | w | y] ,
+                    v -> b ,
+                    z -> "\u03b8" ,
+                    ç -> s
+                  ] .o.
+                  [q u -> k || _ [e | i | í]] .o.
+                  [q -> k] .o.
+                  [[s | x] -> e s || .#. _ \[V | í | ú | w | y]] .o.
+                  [p -> 0 || .#. _ s] .o.
+                  [g -> 0 || .#. _ n] .o.
+                  [m -> 0 || .#. _ n];
+
+# 3. Homologar la "B".
+define PhonologyB [b -> "\u03b2" || [[V | í | ú | w] | [[C | C2] - [m | n]]] _ ];
+
+# 4. Homologar la "C".
+define PhonologyC [c -> "\u03b8" || _ [e | i | í]] .o.
+                  [c -> k];
+
+# 5. Homologar la "D".
+define PhonologyD [d -> D || [.#. | [l | n]] _] .o.
+                  [d -> ð] .o.
+                  [D -> d];
+
+# 6. Homologar la "G" y "GU".
+define PhonologyG [g u -> G w || [.#. | n] _ [a | o]] .o.
+                  [g ü -> G w || _ [e | i | í]] .o.
+                  [g u -> G || [.#. | n] _ [e | i | í]] .o.
+                  [g u -> "\u0263" w || _ [a | o]] .o.
+                  [g u -> "\u0263" || _ [e | i | í]] .o.
+                  [g -> X || _ [e | i | í]] .o.
+                  [g -> G || [.#. | n] _ ] .o.
+                  [g -> "\u0263"] .o.
+                  [G -> g];
+
+# 7. Homologar la "H".
+define PhonologyH [h -> 0];
+
+# 8. Homologar la "I".
+define PhonologyI [i -> J || _ [a | e | o | u | ú]] .o.
+                  [í -> i];
+
+# 9. Homologar la "M".
+define PhonologyM [m -> n || ? _ .#.];
+
+# 10. Homologar la "N".
+define PhonologyN [n -> m || _ [b | p | m]] .o.
+                  [n -> "\u014b" || _ [k | g | X]] .o.
+                  [n -> N || _ [t | d | s | "\u03b8"]] .o.
+                  [n -> "\u0271" || _ f];
+
+# 11. Homologar la "R".
+define PhonologyR [r^>1 @-> R] .o.
+                  [r -> R || .#. _ , [l | n | s | x | "\u03b8"] _ , .#. [s u "\u03b2"] _ ] .o.
+                  [r -> "\u027e"] .o.
+                  [R -> r];
+
+# 12. Homologar la "U".
+define PhonologyU [[u | ü] -> w || _ [a | e | i | o | J]] .o.
+                  [ú -> u, ü -> u];
+
+# 13. Homologar la "X".
+define PhonologyX [
+                    x -> k s ||
+                    [V | J | w] _ [V | J | w] ,
+                    _ [C | C2 | .#.]
+                  ] .o.
+                  [x -> s || .#. _];
+
+# 14. Homologar la "Y".
+define PhonologyY [
+                    y -> i ||
+                    [V | í | ú | ü | w] _ [.#. | \[V | í | ú | ü | w]] ,
+                    .#. _ .#. ,
+                    [C | C2] _ [[V | í | ú | w] | [C | C2] | .#.]
+                  ] .o.
+                  [y -> "\u029d"];
+
+# 15. Reemplazos finales y ceceo por seseo
+define Phonology1 [
+                    X -> x,
+                    J -> j,
+                    "\u03b8" -> s
+                  ] .o.
+                  [[k s]^>1 @-> k s];
+
+# 16. Remover símbolos que están por fuera del diccionario y repeticiones.
+define Alphabet [V | w | C | C2];
+
+define Removerlengthening [
+                            a^>2 @-> a a ,
+                            e^>2 @-> e e ,
+                            i^>2 @-> i i ,
+                            o^>2 @-> o o ,
+                            u^>2 @-> u u ,
+                            w^>2 @-> w w ,
+                            b+ @-> b ,
+                            d+ @-> d ,
+                            f+ @-> f ,
+                            g+ @-> g ,
+                            j+ @-> j ,
+                            k^>1 @-> k "\u02d0" ,
+                            l+ @-> l ,
+                            m^>1 @-> m "\u02d0" ,
+                            n^>1 @-> n "\u02d0" ,
+                            N+ @-> N ,
+                            p^>1 @-> p "\u02d0" ,
+                            r+ @-> r ,
+                            s+ @-> s ,
+                            t^>1 @-> t "\u02d0" ,
+                            x+ @-> x ,
+                            ð+ @-> ð ,
+                            "\u014b"+ @-> "\u014b" ,
+                            "\u0263"+ @-> "\u0263" ,
+                            "\u0271"+ @-> "\u0271" ,
+                            "\u0272"+ @-> "\u0272" ,
+                            "\u027e"+ @-> "\u027e" ,
+                            "\u029d"+ @-> "\u029d" ,
+                            "\u02a7"+ @-> "\u02a7" ,
+                            "\u03b2"+ @-> "\u03b2"
+                          ];
+
+regex PhonologyAccentedVowels .o.
+      Phonology0 .o.
+      PhonologyY .o.
+      PhonologyB .o.
+      PhonologyC .o.
+      PhonologyD .o.
+      PhonologyG .o.
+      PhonologyH .o.
+      PhonologyI .o.
+      PhonologyM .o.
+      PhonologyN .o.
+      PhonologyR .o.
+      PhonologyU .o.
+      PhonologyX .o.      
+      Phonology1 .o.
+      [\Alphabet -> 0] .o.
+      Removerlengthening;

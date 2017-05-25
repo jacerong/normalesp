@@ -1,0 +1,51 @@
+# author: Jhon Adrián Cerón-Guzmán
+# email: <jacerong@unal.edu.co>
+# version: 0.1
+# description: generación de variantes terciarias. Se incluye normalización de repetición de caracteres y escritura consonántica.
+
+define V [a | e | i | o | u];
+
+define C [b | c | d | f | g | h | j | k | l | m | n | ñ | p | q | r | s | t | v | w | x | y | z];
+
+define A [V | C];
+
+define SED [?* [0:V]^<2 ?* [?:0 | 0:? | ?:?-?]^<2 ?*];
+
+define C1 [?* [?:0 | 0:? | ?:?-?]^<2 ?*];
+
+source lengthening_normalisation.foma
+
+load stack es-dicc.bin
+define StandardDicc;
+
+load stack PND-gazetteer-lowercase.bin
+define PNDGazetteer;
+
+define Deaccent [á -> a , é -> e , í -> i , ó -> o , ú -> u , ü -> u];
+
+define OtherChanges [[..] -> [u | ü | 0] || g _ [e | i]] .o.
+                    [k -> [k | q u] ,, k -> [k | c] || _ \[e | i]] .o.
+                    [q -> [q | q u] || _ [a | e | i | o]] .o.
+                    [u -> [u | ü] || q _ [e | i]] .o.
+                    [[..] -> [h | 0] || _ i [a | e | o] , [.#. | \q | \g] _ u [a | e | o] ,,
+                     [..] -> [h | 0] || [.#. | \h] [V - u] _ V , [.#. | \q | \g | \h] u _ V];
+
+define Reaccent [A* [a:á | e:é | i:í | o:ó | u:ú]^<2 A*];
+
+define TertiaryBase1Transducer [Deaccent .o. LengtheningNormalisation .o.
+                                OtherChanges .o. SED .o. Reaccent];
+
+define TertiaryBase2Transducer [Deaccent .o. LengtheningNormalisation .o.
+                                OtherChanges .o. Reaccent];
+
+define TertiaryBase3Transducer [Deaccent .o. LengtheningNormalisation .o.
+                                OtherChanges .o. C1 .o. Reaccent];
+
+# Variantes terciarias del diccionario estándar:
+regex TertiaryBase1Transducer .o. StandardDicc;
+save stack tertiary_variants-Dicc.bin
+
+clear
+
+regex TertiaryBase3Transducer .o. PNDGazetteer;
+save stack tertiary_variants-PND.bin
