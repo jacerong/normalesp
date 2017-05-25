@@ -1,0 +1,71 @@
+== Tweet-Norm_es corpus for Tweet normalization ==
+
+Last update: 2015/03/17
+
+The Tweet-Norm_es is a corpus of tweets annotated for microtext normalization. It contains a set of tweets in Spanish where Out Of Vocabulary (OOV) words are classified, and the normalized forms are provided. 
+
+==============================================
+
+License
+
+==============================================
+
+This resource is distributed for research purposes, and includes both the content of the tweets as well as the manual annotations for the word normalizations of each tweet, following the guidelines of the Tweet-Norm 2013 shared task.
+
+The content of the tweets is distributed by adhering to the 6.b(i) clause of Twitter's TOS, which allows us to distribute a tweet collection of no more than 50,000 tweets: https://dev.twitter.com/overview/terms/agreement-and-policy#6._Be_a_Good_Partner_to_Twitter
+The content of the tweets, hence, remains under Twitter's license (see I.B above).
+
+The manual annotations we provide along with these tweets are released under the Creative Commons Attribution License (CC BY). The full details of this license can be found at http://creativecommons.org/licenses/by/3.0/legalcode
+
+If you use this corpus please cite the following paper:
+
+      - Iñaki Alegria, Nora Aranberri, Víctor Fresno, Pablo Gamallo, Lluis Padró, Iñaki San Vicente, Jordi Turmo, Arkaitz Zubiaga. 2013. "Introducción a la tarea compartida Tweet-Norm 2013: Normalización léxica de tuits en español". Workshop on Tweet Normalization at SEPLN (Tweet-Norm). Madrid. pp. 36-45.  ISBN: 978-84-695-8349-4
+
+
+
+==============================================
+
+Format of the corpus:
+
+==============================================
+
+This corpus files contain two files: 'tweet-norm-XXX_annotated.txt' and 'tweet-norm-XXXX_ids.tsv'.
+
+--> tweet-norm-XXXX_annotated.txt: this file contains a set of annotated tweets. The format of the file is the following:
+
+tweetId1<tab>tweet1 Text
+<tab>OOV1<blank_space>category_OOV1<blank_space>correct_formOOV1 **
+<tab>OOV2<blank_space>category_OOV2<blank_space>correct_formOOV2
+        ...
+<tab>OOVn<blank_space>category_OOVn<blank_space>correct_formOOVn
+tweetId2<tab>tweet2 Text
+	...
+
+   Where,
+        category_OOV can be: 0=Variant , 1=Correct , or 2=NoEs
+   and
+        correct_formOOV is the corrected form of the OOV word in the case of Variants (0) or "-" in the case of Correct (1) and NoEs (2) categories. In cases where more than one corrected forms exist, forms are separated by the '_|_' sequence. e.g. 
+"	Tranqui 0 Tranquila_|_Tranquilo" 
+
+
+   ** Initial space is '\t', the rest are ' '. No other '\s' chars are used; if needed word forms contain the '_' character instead.
+
+
+==============================================
+
+Content of the corpus:
+
+==============================================
+
+The corpus is divided in three parts:
+
+--> tweet-norm-dev100: initial sample of 100 annotated tweets.
+--> tweet-norm-dev500: development corpus containing 500 annotated tweets. 
+
+Participants on the TweetNorm 2013 shared task were provided with both tweet-norm-dev100 and tweet-norm-dev500 to use them as development set.
+
+--> tweet-norm-test: test corpus containing 564 annotated tweets.
+
+
+
+
