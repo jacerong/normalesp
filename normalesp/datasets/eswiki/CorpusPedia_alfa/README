@@ -1,0 +1,50 @@
+CorpusPedia ALFA
+
+Author: 
+Isaac González (isaacjgonzalez@gmail.com)
+Grupo Gramatica do Espanhol
+University of Santiago de Compostela
+Galiza (Spain)
+
+
+DESCRIPTION
+This software creates corpus from wikipedia. CorpusPedia transform the wikipedia of a language (or some languages) in a corpus (or some corpus). A corpus is a collection of texts, in this case a collection of aticles with some information for each article: title, text in wiki format and plaintext, links to other pages, categories, related articles and translations of the term. CorpusPedia ALFA is now prepared for english, portugueese, galician, spanish and french, we are working to extend to every language.
+
+
+REQUIREMENTS
+You will need ruby1.9 or ruby1.9.1:
+	For Debian/Ubuntu users just type in console: "sudo apt-get install ruby1.9.1-full rubygems1.9.1"
+	For other systems see: http://ruby-lang.org/
+
+
+HOW TO USE
+Remember: CorpusPedia ALFA only works for english, portugueese, galician, spanish and french!
+
+CorpusPedia define some folders to get and put information.
+	src/ - is the place where corpuspedia will look for xml source of wikipedia/s that you have to download.
+	lib/ - some libraries with CorpusPedia needs
+	log/ - store the logs of the executions
+	data/ - store other extraction files (the translations and the categories relations)
+	corpus/ - store the corpus created
+
+1 - Getting Wikipedia xml source for a language
+You can download the hole wikipedia for a language in this page: http://download.wikimedia.org/enwiki/ just changing "en" for other language code (language code is placed before wikipedia.org like http://pt.wikipedia.org for portugueese), next step is choose a recent date and finally download the page-articles version of the Wikipedia. Then unpackit into SRC/ folder, check that the file is whatever.xml.
+Or you cand download the Wikipedia in en,pt,es,gl automaticlally just running our script: "ruby1.9.1 descarregador.rb"  (beafore execute that command in the console, we have to install a library typing this: "gem1.9.1 install hpricot") this will download, unpack and place it in the proper folder. Be patient, the files are very very big and could take a while; remember you will need a lot disk space (at least couple of GB).
+
+2 - Creating the Corpus
+You just have an xml from wikipedia in src/, so you can run the CorpusPedia script. This script will take ALL the files in SRC except you indicates what languages do you want. The process is very very slow because we are parsing tons of text and extracting a lot of data; you can check the size of the corpus file in order to see if it is growing up (execute couple of times "ls -l CORPUS" and realize the different). Depending computer resources and wikipedia languages you could need even couple of days to execute CorpusPedia.
+
+Execution for all files:
+ruby1.9.1 corpuspedia.rb
+
+Execution for some languages:
+ruby1.9.1 corpuspedia.rb -lang:en,gl
+
+3 - Getting the result
+If the corpuspedia ends properly, some new files appears, check the corpus/ and data/ folder and you could see new files with info:
+- The corpus file: xml structure, it is a collection of extracted info about each articles 
+- The translation file: each line has an article title in different languages, if there aren't translations a sharp (#) appears. The languages order is: gl pt es en fr ca eu al it cs bg el
+- The category file: each line is a category an the fathers categories. The structure is: category \t father_category1, father_category2...
+
+
+

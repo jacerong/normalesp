@@ -1,0 +1,23 @@
+Este directorio contiene programas que procesan el corpus de la Wikipedia creado por Corpuspedia.
+
+El objetivo de estos es construir un modelo de lenguaje de n-gramas, y además extraer gazetteers de múltiple propósito (como PND, acrónimos, etc).
+
+A continuación se detallan estos programas:
+    0. filter_out_tags.py: Recibe como entrada el archivo de texto generado por la herramienta Corpuspedia, y filtra etiquetas que no son relevantes para el objetivo descrito. Véase este código para conocer la etiqueta del corpus original y cuáles son las etiquetas filtradas.
+        Entrada: ../corpus/eswiki-corpus.txt
+        Salida: ../corpus/eswiki-corpus_preproc-step-0.txt
+    1. parse_wikitext.py: Una vez se ha llevado a cabo el paso cero de pre-procesamiento del corpus, este código toma el contenido de la etiqueta 'wikitext' y lo convierte a texto plano. Se trata de un analizador gramático que procesa el "wikitext mark-up" para luego pasar el texto plano resultante por un analizador morfosintactico y obtener tokens.
+    NOTA: una vez se ha ejecutado este analizador satisfactoriamente, puede eliminarse el archivo que toma como entrada.
+        Entrada: ../corpus/eswiki-corpus_preproc-step-0.txt
+        Salida: ../corpus/eswiki-plaintext-corpus.txt
+    2. morpho_analysis.py: Analiza morfologicamente el texto y realiza etiquetado P-o-S. Esto sirve para preparar el corpus que servirá para el entrenamiento del modelo de lenguaje. Así pues, se convierten a minúscula los tokens no etiquetados como Nombres Propios, se remueven signos de puntación y (parcialmente) números y fechas.
+    NOTAS:
+        1. el fichero de salida de este programa es el corpus de Wikipedia procesado. Además, se genera un gazetteer de nombres propios, que debe ser posteriormente procesado (remover entradas duplicadas, verificar que correspondan a entradas de nombres propios, etc.)
+        2. como tal, el corpus no contiene información de etiquetas. Estas etiquetas sirven para filtrar el contenido del corpus y así estructurarlo.
+        ----------------------------------------------------
+        Entrada: ../corpus/eswiki-plaintext-corpus.txt
+        Salida: ../corpus/eswiki-tagged-plaintext-corpus.txt
+    3. build_corpus.py: une en un archivo plano (es decir, sin estructura xml) el contenido de los artículos de wikipedia. Además, realiza contracciones que fueron separadas por Freeling.
+    NOTA: el resultado de este programa, es el corpus de Wikipedia en español.
+        Entrada: ../corpus/eswiki-tagged-plaintext-corpus.txt
+        Salida: ../corpus/eswiki-corpus.txt
