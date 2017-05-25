@@ -1,0 +1,10 @@
+# pip==9.0.1
+numpy
+scipy
+# kenlm: intall the kenlm's python module as indicated below.
+# pip install https://github.com/kpu/kenlm/archive/master.zip
+psutil
+py_common_subseq
+scikit-learn==0.17.1
+unidecode
+prettytable
