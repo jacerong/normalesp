@@ -1,8 +1,16 @@
 *.pyc
 *.bin
 
+db.sqlite3
+
 normalesp/config/general.xml
 
 normalesp/datasets/eswiki/corpora/
 normalesp/datasets/eswiki/corpus/
 normalesp/datasets/eswiki/src/
+
+run/
+
+static/
+
+media/
