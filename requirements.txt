@@ -10,3 +10,4 @@ unidecode
 prettytable
 django
 djangorestframework
+requests
