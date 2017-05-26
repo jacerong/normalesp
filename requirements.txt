@@ -8,3 +8,5 @@ py_common_subseq
 scikit-learn==0.17.1
 unidecode
 prettytable
+django
+djangorestframework
