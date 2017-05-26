@@ -1,9 +1,9 @@
 # -*- coding: iso-8859-15 -*-
 
 
-import os, re, sys, time
+import json, os, re, sys, time
 
-import numpy as np
+import numpy as np, requests
 from prettytable import PrettyTable
 
 
@@ -21,9 +21,24 @@ def _write_in_file(fname, content, mode='a'):
         f.write(content)
 
 
-def performance_custom_evaluation(corpus_fname):
+def _perform_spell_checking(text, use_api, api_url):
+    if use_api:
+        head = {"Content-type": "application/json"}
+        data = json.dumps({'text': text})
+        r = requests.post(api_url, data=data, headers=head)
+        if r.status_code == requests.codes.ok:
+            return json.loads(r.content)
+        else:
+            raise Exception
+    else:
+        spell = SpellTweet()
+        return spell.spell_tweet(text=text)
+
+
+def performance_custom_evaluation(
+        corpus_fname, use_api=False,
+        api_url="http://127.0.0.1:8000/api/spell_checking/"):
     """Realiza una evaluación personalizada del desempeño del sistema."""
-    spell = SpellTweet()
 
     num_tweets = 0
     num_oov_words = 0
@@ -56,7 +71,11 @@ def performance_custom_evaluation(corpus_fname):
                 tweet_id = m.group(1)
 
                 text = re.sub(tweet_id, '', line).strip()
-                oov_words[tweet_id] = spell.spell_tweet(text=text)
+                try:
+                    oov_words[tweet_id] =\
+                        _perform_spell_checking(text, use_api, api_url)
+                except:
+                    print "Error procesando tweet %s" % tweet_id
 
                 flat_oov_words = np.array([
                     oov[2] for oov in oov_words[tweet_id]], dtype=unicode)
@@ -172,4 +191,8 @@ def performance_custom_evaluation(corpus_fname):
 
 
 if __name__ == '__main__':
-    performance_custom_evaluation(CURRENT_PATH +'/Tweet-Norm_es/tweet-norm-test462_annotated.txt')
+    """performance_custom_evaluation(
+        CURRENT_PATH +'/Tweet-Norm_es/tweet-norm-test462_annotated.txt')"""
+    performance_custom_evaluation(
+        CURRENT_PATH +'/Tweet-Norm_es/tweet-norm-test462_annotated.txt',
+        use_api=True)
