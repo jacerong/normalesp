@@ -1,232 +1,343 @@
-= 0. Preliminares
+0. Preliminares
+===============
 
-El presente documento de instalación se desarrolla en un entorno Debian Jessie, por lo que los comandos a ingresar en consola corresponden a la sintaxis de este sistema operativo.
+Este documento de instalación se desarrolla en un entorno Debian 8 "jessie", por lo que los comandos a ingresar en consola corresponden a la sintaxis de este sistema operativo.
 
 Este proyecto utiliza las siguientes librerías de terceros, por lo que se recomienda proceder con su instalación antes de continuar con este instructivo:
 
-* FreeLing 4.0 [http://nlp.lsi.upc.edu/freeling/node/1]
-* kenlm [https://kheafield.com/code/kenlm/]
-* foma [https://fomafst.github.io/]
+- FreeLing 4.0 [http://nlp.lsi.upc.edu/freeling/node/1].
+- kenlm [https://kheafield.com/code/kenlm/].
+- foma 0.9.18alpha [https://fomafst.github.io/].
 
-Téngase por favor en cuenta que la instalación de tales librerías está por fuera del alcance de este documento. Asegúrese entonces que las respectivas instalaciones sean satisfactorias.
+Téngase por favor en cuenta que la instalación de tales librerías está por fuera del alcance de este documento. Asegúrese entonces que las librearías sean instaladas satisfactoriamente.
 
-== 0.1 Estimar un modelo de lenguaje de n-gramas de la Wikipedia en español
-En esta sección se describirá el proceso de estimación de un modelo de lenguaje utilizando el corpus de la Wikipedia en español. El proceso entonces va desde la descarga de un backup del mencionado recurso lingüístico (ojalá el más reciente), hasta la estimación de un modelo de trigramas. A continuación el paso a paso:
+0.1 Requerimientos del sistema
+------------------------------
 
-1. Instalar ruby. Esto se consigue ingresanfo el siguiente comando en consola: "sudo apt-get install ruby".
+Instalación
+    Para llevar a cabo la instalación, se requieren 12G de memoria RAM disponibles.
 
-Nótese que, según la documentación de CorpusPedia [http://gramatica.usc.es/pln/tools/CorpusPedia.html] (que utilizaremos para crear un corpus de la Wikipedia, al que luego preprocesaremos) la versión requerida de 'ruby' es la "1.9.1". Sin embargo, esta versión no está más disponible en los repositorios de la distribución Debian Jessie, por lo que utilizaremos la "2.1.5".
+Uso
+    Se recomienda 4G de memoria RAM disponibles.
 
-2. Descargar un backup de la Wikipedia en español. Para ello, ingrese a la dirección electrónica [https://dumps.wikimedia.org/eswiki/], escoja una fecha (ojalá la más reciente) y descarge la versión "page-articles"-"eswiki-YYYYMMDD-pages-articles.xml.bz2" de la Wikipedia. Tenga en cuenta que descargará varias gigas de información, por lo que la descarga tomará varios minutos. Finalmente, disponga el archivo descargado en la ruta "/normalesp/datasets/eswiki/src/" y descomprímalo.
+0.2 Dependencias de Python
+--------------------------
 
-3. Crear un corpus de la Wikipedia en español. Ubíquese en la ruta "/normalesp/datasets/eswiki/CorpusPedia_alfa/" e ingrese el siguiente comando: "ruby corpuspedia.rb -c -lang:es". Este proceso, que tal vez tomará varios minutos e incluso horas, generará como resultado el archivo ""/normalesp/datasets/eswiki/corpus/eswiki-corpus.txt". Tenga en cuenta que este no es el corpus definitivo que se utilizará para la estimación del modelo de lenguaje, pero sí corresponde a su base.
+Este proyecto requiere ``Python 2.7``.
 
-Debido a que CorpusPedia genera algunos directorios y archivos que no son utilizados en la estimación del modelo de lenguaje, se puede proceder a eliminarlos. Estos son:
+La lista completa de módulos Python que se requieren, puede encontrarse en el archivo ``/requirements.txt``.
 
-* "/normalesp/datasets/eswiki/comparable/".
-* "/normalesp/datasets/eswiki/data/".
-* "/normalesp/datasets/eswiki/log/".
-* "/normalesp/datasets/eswiki/ontology/".
+1. Estimar un modelo de lenguaje de *n*-gramas de la Wikipedia en español
+=========================================================================
 
-Igualmente, puede eliminarse el corpus original descomprimido ("/normalesp/datasets/eswiki/src/eswiki-YYYYMMDD-pages-articles.xml").
+A lo largo de esta sección se describirá el proceso de estimación de un modelo de lenguaje utilizando el corpus de la Wikipedia en español. Este proceso entonces va desde la descarga de un *backup* del mencionado recurso lingüístico (ojalá el más reciente), hasta la estimación de un modelo de *trigramas*. A continuación el paso a paso:
 
-4. Ejecutar el programa "/normalesp/datasets/eswiki/parsers/filter_out_tags.py". Este programa genera como resultado el archivo "/normalesp/datasets/eswiki/corpus/eswiki-corpus_preproc-step-0.txt", el cual se utilizará como entrada en el siguiente paso; es por esto que, el archivo "/normalesp/datasets/eswiki/corpus/eswiki-corpus.txt" debería ser eliminado, pues no será más utilizado.
+**1. Instalar ``ruby``.** Esto se consigue ingresando el siguiente comando en consola::
 
-NOTA: este proceso tardará varios minutos.
+    $ sudo apt-get install ruby
 
-5. Ejecutar el programa "/normalesp/datasets/eswiki/parsers/parse_wikitext.py". Este programa genera como resultado el archivo "/normalesp/datasets/eswiki/corpus/eswiki-plaintext-corpus.txt", el cual se utilizará como entrada en el siguiente paso; es por esto que, el archivo "/normalesp/datasets/eswiki/corpus/eswiki-corpus_preproc-step-0.txt" debería ser eliminado, pues no será más utilizado.
+Nótese que según la documentación de ``CorpusPedia`` [http://gramatica.usc.es/pln/tools/CorpusPedia.html], librería que se utilizará para crear un corpus base de la Wikipedia en español, la versión requerida de ``ruby`` es la ``1.9.1``. Sin embargo, esta versión no está más disponible en los repositorios de la distribución Debian 8 "jessie", por lo que se utilizará la ``2.1.5``.
 
-NOTA: este proceso tardará varias horas.
+**2. Descargar un *backup* de la Wikipedia en español.** Para ello, ingrese a la dirección electrónica ``https://dumps.wikimedia.org/eswiki/``, escoja una fecha (ojalá la más reciente) y descarge el archivo ``eswiki-YYYYMMDD-pages-articles.xml.bz2``. Tenga en cuenta que se descargarán varios *gigabytes* de información, por lo que esta descarga tomará varios minutos. Finalmente, mueva el archivo descargado a la ruta ``/normalesp/datasets/eswiki/src/`` y descomprímalo.
 
-6. Analizar morfológicamente el corpus de la Wikipedia y realiza etiquetado "Part-of-Speech". Para llevar a cabo este proceso se utilizará la librería FreeLing, la cual se instanciará en modo servidor a fin de procesar las solicitudes de clientes evitando su reinicio entre cada una de estas.
+**3. Crear un corpus de la Wikipedia en español.** Cambie el directorio a ``/normalesp/datasets/eswiki/CorpusPedia_alfa/`` e ingrese el siguiente comando: ``ruby corpuspedia.rb -c -lang:es``. Este proceso, que tal vez tomará varios minutos e incluso horas, generará como resultado el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-corpus.txt``. Tenga en cuenta que este no es el corpus definitivo que se utilizará para la estimación del modelo de lenguaje, pero sí corresponde a su base.
 
-Antes de instanciar FreeLing, el usuario debería revisar que las rutas y archivos de configuración relacionados en "/normalesp/datasets/eswiki/parsers/analyzer.cfg" están bien definidos.
+Debido a que ``CorpusPedia`` genera algunos directorios y archivos que no se utilizarán en la estimación del modelo de lenguaje, se puede proceder a eliminarlos. Estos son:
 
-Se procede entonces a instanciar Freeling en modo servidor, así: "analyzer -f /normalesp/datasets/eswiki/parsers/analyzer.cfg --server --port 50005 &". A continuación, ejecute el programa "/normalesp/datasets/eswiki/parsers/morpho_analysis.py".
+- ``/normalesp/datasets/eswiki/comparable/``.
+- ``/normalesp/datasets/eswiki/data/``.
+- ``/normalesp/datasets/eswiki/log/``.
+- ``/normalesp/datasets/eswiki/ontology/``.
 
-Una vez finalizada la ejecución del programa Python, se generará el archivo "/normalesp/datasets/eswiki/corpus/eswiki-tagged-plaintext-corpus.txt", el cual se utilizará como entrada en el siguiente paso; por tal motivo, se sugiere eliminar el archivo "/normalesp/datasets/eswiki/corpus/eswiki-plaintext-corpus.txt".
+Igualmente, puede eliminarse el corpus original descomprimido (``/normalesp/datasets/eswiki/src/eswiki-YYYYMMDD-pages-articles.xml``).
 
-NOTA: este proceso tardará varias horas.
+**4. Ejecutar el programa ``/normalesp/datasets/eswiki/parsers/filter_out_tags.py``.** Este programa genera como resultado el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-corpus_preproc-step-0.txt``, el cual se utilizará como entrada en el siguiente paso; es por esto que, el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-corpus.txt`` debería ser eliminado, pues no será más utilizado.
 
-7. Ejecutar el programa "/normalesp/datasets/eswiki/parsers/build_corpus.py". Este programa genera la versión final del corpus de la Wikipedia en español que se utilizará para estimar el modelo de lenguaje, a saber: "/normalesp/datasets/eswiki/corpus/eswiki-corpus.txt". Por lo anterior, se sugiere eliminar el archivo "/normalesp/datasets/eswiki/corpus/eswiki-tagged-plaintext-corpus.txt".
+Por favor tenga en cuenta que este proceso tardará varios minutos.
 
-8. Estimar el modelo de lenguaje del corpus de la Wikipedia en español. Para estimar un modelo de lenguaje de trigramas (3-gramas) del corpus de la Wikipedia en español, se utilizará la herramienta kenlm. Este proceso toma como entrada el corpus resultante del paso anterior, y genera un archivo en formato "arpa". A continuación se relaciona el comando para estimar el modelo de lenguaje, agregando que el archivo resultante se dispondrá en la ruta "/normalesp/datasets/eswiki/corpora/":
+**5. Ejecutar el programa ``/normalesp/datasets/eswiki/parsers/parse_wikitext.py``.** Este programa genera como resultado el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-plaintext-corpus.txt``, el cual se utilizará como entrada en el siguiente paso; es por esto que, el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-corpus_preproc-step-0.txt`` debería ser eliminado, pues no será más utilizado.
 
-"bin/lmplz -o 3 -S 12G </normalesp/datasets/eswiki/corpus/eswiki-corpus.txt >/normalesp/datasets/eswiki/corpora/eswiki-corpus-3-grams.arpa"
+Por favor tenga en cuenta que este proceso tardará varias horas.
 
-NOTA: el parámetro "-S" sirve para especificar la cantidad de memoria que se utilizará. Como puede observarse, se han especificado 12G; sin embargo, el usuario puede modificar la cantidad de memoria a utilizar según su criterio.
+**6. Analizar morfológicamente el corpus de la Wikipedia y realizar etiquetado "Part-of-Speech".** Para llevar a cabo este proceso se utilizará la librería ``FreeLing``, la cual se instanciará en modo servidor con el fin de procesar las solicitudes sin reiniciar entre cada una de estas.
 
-9. Convertir el modelo de lenguaje en un binario. Un formato de archivo binario permite que el modelo de lenguaje se cargue más rápido, a la vez que reduce el tamaño de archivo.
+Antes de instanciar ``FreeLing``, el usuario debería revisar que las rutas y archivos de configuración relacionados en ``/normalesp/datasets/eswiki/parsers/analyzer.cfg`` existen.
 
-"bin/build_binary /normalesp/datasets/eswiki/corpora/eswiki-corpus-3-grams.arpa /normalesp/datasets/eswiki/corpora/eswiki-corpus-3-grams.bin"
+Se procede entonces a instanciar ``Freeling`` en modo servidor, así::
 
-Finalmente, se sugiere eliminar el archivo "/normalesp/datasets/eswiki/corpora/eswiki-corpus-3-grams.arpa", puesto que no se utilizará más.
+    $ analyzer -f /normalesp/datasets/eswiki/parsers/analyzer.cfg --server --port 50005 &
 
-== 0.2 Compilar transductores de estado finito
-El objetivo de esta sección es describir cómo compilar los archivos fuentes de los transductores en binarios, tal que estos últimos puedan ser utilizados por el programa principal de este proyecto. A continuación se relaciona cómo compilar cada uno de los 20 transductores de estado finito.
+A continuación, se ejecuta el programa ``/normalesp/datasets/eswiki/parsers/morpho_analysis.py``.
 
-Antes de continuar, es importante mencionar que las rutas de los directorios donde se disponen los archivos fuentes y los binarios son "/normalesp/datasets/transducers/src/" y "/normalesp/datasets/transducers/bin/", respectivamente. Así mismo, el comando para iniciar foma es "/ruta/a/foma/foma"; foma debería iniciarse desde el directio de los archivos fuentes.
+Una vez finalizada la ejecución de este programa, se generará el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-tagged-plaintext-corpus.txt``, el cual se utilizará como entrada en el siguiente paso; por tal motivo, se sugiere eliminar el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-plaintext-corpus.txt``.
 
-* "es-dicc":
-0. Inicie foma.
-1. "read text es-dicc.txt".
-2. "save stack es-dicc.bin".
-3. Mueva el binario resultante al respectivo directorio. Sin embargo, deje una copia del binario en el directorio de archivos fuentes.
-4. Finalice la instancia de foma ("exit").
+Por favor tenga en cuenta que este proceso tardará varias horas.
 
-* "pnd-gazetteer":
-0. Inicie foma.
-1. "read text PND-gazetteer.txt".
-2. "save stack PND-Gazetteer.bin".
-3. Mueva el binario resultante al respectivo directorio.
-4. Finalice la instancia de foma ("exit").
+**7. Ejecutar el programa ``/normalesp/datasets/eswiki/parsers/build_corpus.py``.** Este programa genera la versión final del corpus de la Wikipedia en español que se utilizará para estimar el modelo de lenguaje, a saber: ``/normalesp/datasets/eswiki/corpus/eswiki-corpus.txt``. Por lo anterior, se sugiere eliminar el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-tagged-plaintext-corpus.txt``.
 
-* "normalization_dicc":
-0. Inicie foma.
-1. "read spaced-text normalisation_dicc.txt".
-2. "save stack normalisation_dicc.bin".
-3. Finalice la instancia de foma ("exit").
-NOTA: este archivo no se dispondrá en el directorio de binarios por tratarse de un temporal.
+**8. Estimar un modelo de lenguaje del corpus de la Wikipedia en español.** Para estimar un modelo de lenguaje de *trigramas* (3-gramas) del corpus de la Wikipedia en español, se utilizará la herramienta ``kenlm``. Este proceso toma como entrada el corpus resultante del paso anterior, y genera un archivo en formato ``arpa``. A continuación se relaciona el comando para estimar el modelo de lenguaje, agregando que el archivo resultante se dispone en la ruta ``/normalesp/datasets/eswiki/corpora/``::
 
-* "primary_variants":
-0. Inicie foma.
-1. "source primary_variants.foma".
-2. Mueva el binario resultante ("primary_variants.bin") al respectivo directorio.
-3. Finalice la instancia de foma ("exit").
+    $ bin/lmplz -o 3 -S 12G </normalesp/datasets/eswiki/corpus/eswiki-corpus.txt >/normalesp/datasets/eswiki/corpora/eswiki-corpus-3-grams.arpa
 
-* "dictionary_lookup":
-0. Inicie foma.
-1. "source dictionary_lookup.foma".
-2. Mueva el binario resultante ("dictionary_lookup.bin") al respectivo directorio.
-3. Finalice la instancia de foma ("exit").
+Tenga en cuenta que el parámetro ``-S`` sirve para especificar la cantidad de memoria que se utilizará. Como puede observarse, se han especificado 12G; sin embargo, el usuario puede modificar la cantidad de memoria a utilizar según su criterio.
 
-* "phonology":
-0. Inicie foma.
-1. "source phonology.foma".
-2. "save stack phonology.bin".
-3. Mueva el binario resultante al respectivo directorio. Sin embargo, deje una copia del binario en el directorio de archivos fuentes.
-4. Finalice la instancia de foma ("exit").
+**9. Convertir el modelo de lenguaje en un binario.** Un formato de archivo binario permite que el modelo de lenguaje se cargue más rápido, a la vez que reduce el tamaño de archivo.
 
-* "secondary_variants-dicc":
-0. Inicie foma.
-1. "source secondary_variants.foma".
-2. Mueva el binario resultante ("secondary_variants-Dicc.bin") al respectivo directorio.
-3. Finalice la instancia de foma ("exit").
-Nota: la compilación de este transductor requiere, por lo menos, 2.5G de memoria RAM. Sin embargo, el binario en memoria ocupará 165.5M de RAM.
+::
 
-* "es-verbal-forms-fonemas":
-0. Inicie foma.
-1. "source es-verbal-forms-fonemas.foma".
-2. "save stack es-verbal-forms-fonemas.bin".
-3. Mueva el binario resultante al respectivo directorio.
-4. Finalice la instancia de foma ("exit").
+    $ bin/build_binary /normalesp/datasets/eswiki/corpora/eswiki-corpus-3-grams.arpa /normalesp/datasets/eswiki/corpora/eswiki-corpus-3-grams.bin
 
-* "es-diminutives-fonemas":
-0. Inicie foma.
-1. "source es-diminutives-fonemas.foma".
-2. "save stack es-diminutives-fonemas.bin".
-3. Mueva el binario resultante al respectivo directorio.
-4. Finalice la instancia de foma ("exit").
+Finalmente, se sugiere eliminar el archivo ``/normalesp/datasets/eswiki/corpora/eswiki-corpus-3-grams.arpa``, puesto que no se utilizará más.
 
-* "pnd-gazetteer-fonemas":
-0. Inicie foma.
-1. "source PND-gazetteer-fonemas.foma".
-2. "save stack PND-gazetteer-fonemas.bin".
-3. Mueva el binario resultante al respectivo directorio.
-4. Finalice la instancia de foma ("exit").
+2. Compilar los transductores de estado finito
+==============================================
 
-* "pnd-gazetteer-lowercase":
-0. Inicie foma.
-1. "read text PND-gazetteer-lowercase.txt".
-2. "save stack PND-gazetteer-lowercase.bin".
-3. Finalice la instancia de foma ("exit").
-NOTA: este archivo no se dispondrá en el directorio de binarios por tratarse de un temporal.
+El objetivo de esta sección es describir cómo compilar los archivos fuentes de los transductores en archivos de formato binario, tal que estos últimos puedan ser utilizados por el programa principal de este proyecto. Con respecto a lo anterior, es importante mencionar que los directorios donde se disponen los archivos fuentes y los binarios son ``/normalesp/datasets/transducers/src/`` y ``/normalesp/datasets/transducers/bin/``, respectivamente. Habiendo dicho esto, a continuación se relaciona cómo compilar cada uno de los transductores de estado finito utilizando ``foma``, librería que se recomienda iniciar desde el directorio de los archivos fuentes.
 
-* "tertiary_variants-dicc" y "tertiary_variants-pnd":
-0. Inicie foma.
-1. "source tertiary_variants.foma".
-2. Mueva los binarios resultantes ("tertiary_variants-Dicc.bin" y "tertiary_variants-PND.bin") al respectivo directorio.
-3. Finalice la instancia de foma ("exit").
-Nota: la compilación de este transductor requiere, por lo menos, 9G de memoria RAM. Sin embargo, el binario "tertiary_variants-Dicc.bin", que es el que más memoria RAM requiere en compilación, requerirá 1.3G de RAM.
+**1. ``es-dicc``**
 
-* "pnd-gazetteer-case":
-0. Inicie foma.
-1. "read spaced-text PND-gazetteer-CaSe.txt".
-2. "save stack PND-gazetteer-CaSe.bin".
-3. Mueva el binario resultante al respectivo directorio.
-4. Finalice la instancia de foma ("exit").
+::
 
-* "iv-candidates-fonemas":
-0. Inicie foma.
-1. "source IV-candidates-fonemas.foma".
-2. "save stack IV-candidates-fonemas.bin".
-3. Mueva el binario resultante al respectivo directorio.
-4. Finalice la instancia de foma ("exit").
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    read text es-dicc.txt
+    save stack es-dicc.bin
+    exit
+    $ mv es-dicc.bin /normalesp/datasets/transducers/bin/
 
-* "split-words" y "other-changes":
-0. Comente las siguientes líneas del archivo "tertiary_variants.foma", poniendo el caracter "#" (sin comillas) al inicio de cada una de estas:
-# Variantes terciarias del diccionario estándar:
-regex TertiaryBase1Transducer .o. StandardDicc;
-save stack tertiary_variants-Dicc.bin
+**2. ``pnd-gazetteer``**
 
-clear
+::
 
-regex TertiaryBase3Transducer .o. PNDGazetteer;
-save stack tertiary_variants-PND.bin
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    read text PND-gazetteer.txt
+    save stack PND-Gazetteer.bin
+    exit
+    $ mv PND-Gazetteer.bin /normalesp/datasets/transducers/bin/
 
-Por lo que, una vez comentadas las líneas, el código debería verse así:
-# Variantes terciarias del diccionario estándar:
-# regex TertiaryBase1Transducer .o. StandardDicc;
-# save stack tertiary_variants-Dicc.bin
+**3. ``normalization_dicc``**
 
-# clear
+::
 
-# regex TertiaryBase3Transducer .o. PNDGazetteer;
-# save stack tertiary_variants-PND.bin
-1. Inicie foma.
-2. "source split-words.foma".
-3. "clear".
-4. "regex OtherChanges;".
-5. "save stack other-changes.bin".
-6. Mueva los binarios resultantes ("split-words.bin" y "other-changes.bin") al respectivo directorio.
-7. Finalice la instancia de foma ("exit").
-8. Descomente las líneas modificadas en el paso 0. Por lo tanto, el archivo "tertiary_variants.foma" debería verse así:
-# Variantes terciarias del diccionario estándar:
-regex TertiaryBase1Transducer .o. StandardDicc;
-save stack tertiary_variants-Dicc.bin
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    read spaced-text normalisation_dicc.txt
+    save stack normalisation_dicc.bin
+    exit
 
-clear
+El archivo de formato binario no se moverá al directorio respectivo por tratarse de un temporal.
 
-regex TertiaryBase3Transducer .o. PNDGazetteer;
-save stack tertiary_variants-PND.bin
+**4. ``primary_variants``**
 
-* "length_normalisation" y "length_normalisation-2":
-0. Inicie foma.
-1. "regex LengtheningNormalisation;".
-2. "save stack length_normalisation.bin".
-3. "clear".
-4. "regex LengtheningNormalisation2;".
-5. "save stack length_normalisation-2.bin".
-6. Mueva los binarios resultantes ("length_normalisation.bin" y "length_normalisation-2.bin") al respectivo directorio.
-7. Finalice la instancia de foma ("exit").
+::
 
-* "remove_enclitic", "accentuate_enclitic" y "remove_mente":
-0. Inicie foma.
-1. "source affix_check.foma".
-2. "regex RemoveEnclitic;".
-3. "save stack remove_enclitic.bin".
-4. "clear".
-5. "regex AccentuateEnclitic;".
-6. "save stack accentuate_enclitic.bin".
-7. "clear".
-8. "regex RemoveMente;".
-9. "save stack remove_mente.bin".
-10. Mueva los binarios resultantes ("remove_enclitic.bin", "accentuate_enclitic.bin" y "remove_mente.bin") al respectivo directorio.
-11. Finalice la instancia de foma ("exit").
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source primary_variants.foma
+    exit
+    $ mv primary_variants.bin /normalesp/datasets/transducers/bin/
 
-En este punto, se han compilado los 20 transductores y los binarios resultantes movido al respectivo directorio. Por lo que, se eliminarán los binarios en el directorio "/normalesp/datasets/transducers/src/", a saber:
+**5. ``dictionary_lookup``**
 
-* "es-dicc.bin".
-* "normalisation_dicc.bin".
-* "phonology.bin".
-* "PND-gazetteer-lowercase.bin".
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source dictionary_lookup.foma
+    exit
+    $ mv dictionary_lookup.bin /normalesp/datasets/transducers/bin/
+
+**6. ``phonology``**
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source phonology.foma
+    save stack phonology.bin
+    exit
+    $ cp phonology.bin /normalesp/datasets/transducers/bin/
+
+**7. ``secondary_variants-dicc``**
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source secondary_variants.foma
+    exit
+    $ mv secondary_variants-Dicc.bin /normalesp/datasets/transducers/bin/
+
+La compilación de este transductor requiere, por lo menos, 2.5G de memoria RAM. Sin embargo, el binario tan solo ocupará 165.5M de memoria RAM.
+
+**8. ``es-verbal-forms-fonemas``**
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source es-verbal-forms-fonemas.foma
+    save stack es-verbal-forms-fonemas.bin
+    exit
+    $ mv es-verbal-forms-fonemas.bin /normalesp/datasets/transducers/bin/
+
+**9. ``es-diminutives-fonemas``**
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source es-diminutives-fonemas.foma
+    save stack es-diminutives-fonemas.bin
+    exit
+    $ mv es-diminutives-fonemas.bin /normalesp/datasets/transducers/bin/
+
+**10. ``pnd-gazetteer-fonemas``**
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source PND-gazetteer-fonemas.foma
+    save stack PND-gazetteer-fonemas.bin
+    exit
+    $ mv PND-gazetteer-fonemas.bin /normalesp/datasets/transducers/bin/
+
+**11. ``pnd-gazetteer-lowercase``**
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    read text PND-gazetteer-lowercase.txt
+    save stack PND-gazetteer-lowercase.bin
+    exit
+
+El archivo de formato binario no se moverá al directorio respectivo por tratarse de un temporal.
+
+**12. ``tertiary_variants-dicc`` y ``tertiary_variants-pnd``**
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source tertiary_variants.foma
+    exit
+    $ mv tertiary_variants-Dicc.bin /normalesp/datasets/transducers/bin/
+    $ mv tertiary_variants-PND.bin /normalesp/datasets/transducers/bin/
+
+La compilación del transductor ``tertiary_variants-dicc`` requiere, por lo menos, 9G de memoria RAM. Sin embargo, el binario solo ocupará 1.3G de memoria RAM.
+
+**13. ``pnd-gazetteer-case``**
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    read spaced-text PND-gazetteer-CaSe.txt
+    save stack PND-gazetteer-CaSe.bin
+    exit
+    $ mv PND-gazetteer-CaSe.bin /normalesp/datasets/transducers/bin/
+
+**14. ``iv-candidates-fonemas``**
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source IV-candidates-fonemas.foma
+    save stack IV-candidates-fonemas.bin
+    exit
+    $ mv IV-candidates-fonemas.bin /normalesp/datasets/transducers/bin/
+
+**15. ``split-words`` y ``other-changes``**
+
+Por favor comente las siguientes líneas del archivo ``/normalesp/datasets/transducers/src/tertiary_variants.foma``, agregando el caracter ``#`` al inicio de cada una de estas::
+
+    # Variantes terciarias del diccionario estándar:
+    regex TertiaryBase1Transducer .o. StandardDicc;
+    save stack tertiary_variants-Dicc.bin
+
+    clear
+
+    regex TertiaryBase3Transducer .o. PNDGazetteer;
+    save stack tertiary_variants-PND.bin
+
+Por lo tanto, una vez comentadas las líneas, el código debería verse así::
+
+    # Variantes terciarias del diccionario estándar:
+    # regex TertiaryBase1Transducer .o. StandardDicc;
+    # save stack tertiary_variants-Dicc.bin
+
+    # clear
+
+    # regex TertiaryBase3Transducer .o. PNDGazetteer;
+    # save stack tertiary_variants-PND.bin
+
+Habiendo dicho esto, se proceden a compilar los archivo fuentes.
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source split-words.foma
+    clear
+    regex OtherChanges;
+    save stack other-changes.bin
+    exit
+    $ mv split-words.bin /normalesp/datasets/transducers/bin/
+    $ mv other-changes.bin /normalesp/datasets/transducers/bin/
+
+Finalmente, descomente las líneas modificadas del archivo ``/normalesp/datasets/transducers/src/tertiary_variants.foma``. El archivo entonces debería verse así::
+
+    # Variantes terciarias del diccionario estándar:
+    regex TertiaryBase1Transducer .o. StandardDicc;
+    save stack tertiary_variants-Dicc.bin
+
+    clear
+
+    regex TertiaryBase3Transducer .o. PNDGazetteer;
+    save stack tertiary_variants-PND.bin
+
+**16. ``length_normalisation`` y ``length_normalisation-2``**
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    regex LengtheningNormalisation;
+    save stack length_normalisation.bin
+    clear
+    regex LengtheningNormalisation2;
+    save stack length_normalisation-2.bin
+    exit
+    $ mv length_normalisation.bin /normalesp/datasets/transducers/bin/
+    $ mv length_normalisation-2.bin /normalesp/datasets/transducers/bin/
+
+**17. ``remove_enclitic``, ``accentuate_enclitic`` y ``remove_mente``**
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source affix_check.foma
+    regex RemoveEnclitic;
+    save stack remove_enclitic.bin
+    clear
+    regex AccentuateEnclitic;
+    save stack accentuate_enclitic.bin
+    clear
+    regex RemoveMente;
+    save stack remove_mente.bin
+    exit
+    $ mv remove_enclitic.bin /normalesp/datasets/transducers/bin/
+    $ mv accentuate_enclitic.bin /normalesp/datasets/transducers/bin/
+    $ mv remove_mente.bin /normalesp/datasets/transducers/bin/
+
+Por último, se procede a eliminar los archivos de formato binario temporales en el directorio ``/normalesp/datasets/transducers/src/``, a saber:
+
+- ``/normalesp/datasets/transducers/src/es-dicc.bin``.
+- ``/normalesp/datasets/transducers/src/normalisation_dicc.bin``.
+- ``/normalesp/datasets/transducers/src/phonology.bin``.
+- ``/normalesp/datasets/transducers/src/PND-gazetteer-lowercase.bin``.
