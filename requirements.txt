@@ -1,7 +1,7 @@
 # pip==9.0.1
 numpy
 scipy
-# kenlm: intall the kenlm's python module as indicated below.
+# kenlm: install the Python's kenlm module as indicated below.
 # pip install https://github.com/kpu/kenlm/archive/master.zip
 psutil
 py_common_subseq
