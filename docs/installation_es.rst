@@ -51,11 +51,11 @@ Debido a que ``CorpusPedia`` genera algunos directorios y archivos que no se uti
 
 Igualmente, puede eliminarse el corpus original descomprimido (``/normalesp/datasets/eswiki/src/eswiki-YYYYMMDD-pages-articles.xml``).
 
-**4. Ejecutar el programa ``/normalesp/datasets/eswiki/parsers/filter_out_tags.py``.** Este programa genera como resultado el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-corpus_preproc-step-0.txt``, el cual se utilizará como entrada en el siguiente paso; es por esto que, el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-corpus.txt`` debería ser eliminado, pues no será más utilizado.
+**4. Ejecutar el programa** ``/normalesp/datasets/eswiki/parsers/filter_out_tags.py``. Este programa genera como resultado el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-corpus_preproc-step-0.txt``, el cual se utilizará como entrada en el siguiente paso; es por esto que, el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-corpus.txt`` debería ser eliminado, pues no será más utilizado.
 
 Por favor tenga en cuenta que este proceso tardará varios minutos.
 
-**5. Ejecutar el programa ``/normalesp/datasets/eswiki/parsers/parse_wikitext.py``.** Este programa genera como resultado el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-plaintext-corpus.txt``, el cual se utilizará como entrada en el siguiente paso; es por esto que, el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-corpus_preproc-step-0.txt`` debería ser eliminado, pues no será más utilizado.
+**5. Ejecutar el programa** ``/normalesp/datasets/eswiki/parsers/parse_wikitext.py``. Este programa genera como resultado el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-plaintext-corpus.txt``, el cual se utilizará como entrada en el siguiente paso; es por esto que, el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-corpus_preproc-step-0.txt`` debería ser eliminado, pues no será más utilizado.
 
 Por favor tenga en cuenta que este proceso tardará varias horas.
 
@@ -73,7 +73,7 @@ Una vez finalizada la ejecución de este programa, se generará el archivo ``/no
 
 Por favor tenga en cuenta que este proceso tardará varias horas.
 
-**7. Ejecutar el programa ``/normalesp/datasets/eswiki/parsers/build_corpus.py``.** Este programa genera la versión final del corpus de la Wikipedia en español que se utilizará para estimar el modelo de lenguaje, a saber: ``/normalesp/datasets/eswiki/corpus/eswiki-corpus.txt``. Por lo anterior, se sugiere eliminar el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-tagged-plaintext-corpus.txt``.
+**7. Ejecutar el programa** ``/normalesp/datasets/eswiki/parsers/build_corpus.py``. Este programa genera la versión final del corpus de la Wikipedia en español que se utilizará para estimar el modelo de lenguaje, a saber: ``/normalesp/datasets/eswiki/corpus/eswiki-corpus.txt``. Por lo anterior, se sugiere eliminar el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-tagged-plaintext-corpus.txt``.
 
 **8. Estimar un modelo de lenguaje del corpus de la Wikipedia en español.** Para estimar un modelo de lenguaje de *trigramas* (3-gramas) del corpus de la Wikipedia en español, se utilizará la herramienta ``kenlm``. Este proceso toma como entrada el corpus resultante del paso anterior, y genera un archivo en formato ``arpa``. A continuación se relaciona el comando para estimar el modelo de lenguaje, agregando que el archivo resultante se dispone en la ruta ``/normalesp/datasets/eswiki/corpora/``::
 
@@ -94,7 +94,7 @@ Finalmente, se sugiere eliminar el archivo ``/normalesp/datasets/eswiki/corpora/
 
 El objetivo de esta sección es describir cómo compilar los archivos fuentes de los transductores en archivos de formato binario, tal que estos últimos puedan ser utilizados por el programa principal de este proyecto. Con respecto a lo anterior, es importante mencionar que los directorios donde se disponen los archivos fuentes y los binarios son ``/normalesp/datasets/transducers/src/`` y ``/normalesp/datasets/transducers/bin/``, respectivamente. Habiendo dicho esto, a continuación se relaciona cómo compilar cada uno de los transductores de estado finito utilizando ``foma``, librería que se recomienda iniciar desde el directorio de los archivos fuentes.
 
-**1. ``es-dicc``**
+**1.** ``es-dicc``
 
 ::
 
@@ -105,7 +105,7 @@ El objetivo de esta sección es describir cómo compilar los archivos fuentes de
     exit
     $ mv es-dicc.bin /normalesp/datasets/transducers/bin/
 
-**2. ``pnd-gazetteer``**
+**2.** ``pnd-gazetteer``
 
 ::
 
@@ -116,7 +116,7 @@ El objetivo de esta sección es describir cómo compilar los archivos fuentes de
     exit
     $ mv PND-Gazetteer.bin /normalesp/datasets/transducers/bin/
 
-**3. ``normalization_dicc``**
+**3.** ``normalization_dicc``
 
 ::
 
@@ -128,7 +128,7 @@ El objetivo de esta sección es describir cómo compilar los archivos fuentes de
 
 El archivo de formato binario no se moverá al directorio respectivo por tratarse de un temporal.
 
-**4. ``primary_variants``**
+**4.** ``primary_variants``
 
 ::
 
@@ -138,7 +138,7 @@ El archivo de formato binario no se moverá al directorio respectivo por tratars
     exit
     $ mv primary_variants.bin /normalesp/datasets/transducers/bin/
 
-**5. ``dictionary_lookup``**
+**5.** ``dictionary_lookup``
 
 ::
 
@@ -148,7 +148,7 @@ El archivo de formato binario no se moverá al directorio respectivo por tratars
     exit
     $ mv dictionary_lookup.bin /normalesp/datasets/transducers/bin/
 
-**6. ``phonology``**
+**6.** ``phonology``
 
 ::
 
@@ -159,7 +159,7 @@ El archivo de formato binario no se moverá al directorio respectivo por tratars
     exit
     $ cp phonology.bin /normalesp/datasets/transducers/bin/
 
-**7. ``secondary_variants-dicc``**
+**7.** ``secondary_variants-dicc``
 
 ::
 
@@ -171,7 +171,7 @@ El archivo de formato binario no se moverá al directorio respectivo por tratars
 
 La compilación de este transductor requiere, por lo menos, 2.5G de memoria RAM. Sin embargo, el binario tan solo ocupará 165.5M de memoria RAM.
 
-**8. ``es-verbal-forms-fonemas``**
+**8.** ``es-verbal-forms-fonemas``
 
 ::
 
@@ -182,7 +182,7 @@ La compilación de este transductor requiere, por lo menos, 2.5G de memoria RAM.
     exit
     $ mv es-verbal-forms-fonemas.bin /normalesp/datasets/transducers/bin/
 
-**9. ``es-diminutives-fonemas``**
+**9.** ``es-diminutives-fonemas``
 
 ::
 
@@ -193,7 +193,7 @@ La compilación de este transductor requiere, por lo menos, 2.5G de memoria RAM.
     exit
     $ mv es-diminutives-fonemas.bin /normalesp/datasets/transducers/bin/
 
-**10. ``pnd-gazetteer-fonemas``**
+**10.** ``pnd-gazetteer-fonemas``
 
 ::
 
@@ -204,7 +204,7 @@ La compilación de este transductor requiere, por lo menos, 2.5G de memoria RAM.
     exit
     $ mv PND-gazetteer-fonemas.bin /normalesp/datasets/transducers/bin/
 
-**11. ``pnd-gazetteer-lowercase``**
+**11.** ``pnd-gazetteer-lowercase``
 
 ::
 
@@ -216,7 +216,7 @@ La compilación de este transductor requiere, por lo menos, 2.5G de memoria RAM.
 
 El archivo de formato binario no se moverá al directorio respectivo por tratarse de un temporal.
 
-**12. ``tertiary_variants-dicc`` y ``tertiary_variants-pnd``**
+**12.** ``tertiary_variants-dicc`` y ``tertiary_variants-pnd``
 
 ::
 
@@ -229,7 +229,7 @@ El archivo de formato binario no se moverá al directorio respectivo por tratars
 
 La compilación del transductor ``tertiary_variants-dicc`` requiere, por lo menos, 9G de memoria RAM. Sin embargo, el binario solo ocupará 1.3G de memoria RAM.
 
-**13. ``pnd-gazetteer-case``**
+**13.** ``pnd-gazetteer-case``
 
 ::
 
@@ -240,7 +240,7 @@ La compilación del transductor ``tertiary_variants-dicc`` requiere, por lo meno
     exit
     $ mv PND-gazetteer-CaSe.bin /normalesp/datasets/transducers/bin/
 
-**14. ``iv-candidates-fonemas``**
+**14.** ``iv-candidates-fonemas``
 
 ::
 
@@ -251,7 +251,7 @@ La compilación del transductor ``tertiary_variants-dicc`` requiere, por lo meno
     exit
     $ mv IV-candidates-fonemas.bin /normalesp/datasets/transducers/bin/
 
-**15. ``split-words`` y ``other-changes``**
+**15.** ``split-words`` y ``other-changes``
 
 Por favor comente las siguientes líneas del archivo ``/normalesp/datasets/transducers/src/tertiary_variants.foma``, agregando el caracter ``#`` al inicio de cada una de estas::
 
@@ -300,7 +300,7 @@ Finalmente, descomente las líneas modificadas del archivo ``/normalesp/datasets
     regex TertiaryBase3Transducer .o. PNDGazetteer;
     save stack tertiary_variants-PND.bin
 
-**16. ``length_normalisation`` y ``length_normalisation-2``**
+**16.** ``length_normalisation`` y ``length_normalisation-2``
 
 ::
 
@@ -315,7 +315,7 @@ Finalmente, descomente las líneas modificadas del archivo ``/normalesp/datasets
     $ mv length_normalisation.bin /normalesp/datasets/transducers/bin/
     $ mv length_normalisation-2.bin /normalesp/datasets/transducers/bin/
 
-**17. ``remove_enclitic``, ``accentuate_enclitic`` y ``remove_mente``**
+**17.** ``remove_enclitic``, ``accentuate_enclitic`` y ``remove_mente``
 
 ::
 

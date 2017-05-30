@@ -13,7 +13,7 @@ To stop the services, please type the following instruction::
 
     >>> _switch_normalisation_services('off')
 
-On the other hand, there are two methods to use the spell checker program. The first one is to import the ``SpellTweet`` class as a Python module, while the second one is through a REST request. Whichever method is chosen, the first request will take a while because the language model is loaded in memory; there will be no delay from the second request.
+On the other hand, there are two methods to use the spell checking program. The first one is to import the ``SpellTweet`` class as a Python module, while the second one is through a REST request. Whichever method is chosen, the first request will take a while because the language model is loaded in memory; there will be no delay from the second request.
 
 As a result, the program returns an array of 1-dimensional arrays, where each 1-dimensional array represents one *out-of-vocabulary* (OOV) token whose structure is described through the following example.
 
@@ -23,7 +23,7 @@ Let the tweet be
 
     ``(What's wrong with Iker? Diego and Valdés are doing it well, but We forget fast. Mou lacks humility.)``
 
-and the array ``oov_words`` be the result of the spell checker program,
+and the array ``oov_words`` be the result of the spell checker,
 
 ::
 
@@ -46,9 +46,9 @@ the following explanation can be deduced:
 5. ``oov_words[i][3]`` is the selected normalization candidate.
 6. ``oov_words[i][4]`` is the set of normalization candidates.
 
-Having said the above, the methods to use the spell checker program are described.
+Having said the above, the methods to use the spell checking program are described.
 
-**1. Use the Spell Checker Program as a Python Module**
+**1. Use the Spell Checking Program as a Python Module**
 
 ::
 
@@ -64,15 +64,15 @@ Having said the above, the methods to use the spell checker program are describe
 
 **2. REST API**
 
-A REST API has been developed using `Django <https://www.djangoproject.com/>`_ and the `Django REST framework <http://www.django-rest-framework.org/>`_. The idea is to enable application integration using REST. It is important to note that the web server setup is beyond the scope of this document, so it is assumed the REST API is running (please see [#]_ and [#]_).
+A REST API has been developed using `Django <https://www.djangoproject.com/>`_ and the `Django REST framework <http://www.django-rest-framework.org/>`_. The idea is to enable application integration using REST. It is important to note that server setup is beyond the scope of this document, so it is assumed that the REST API is running (please see [#]_ and [#]_).
 
-So that, the easiest method is to use the ``curl`` command-line utility.
+Requests can be sent to the REST API using the ``curl`` command-line utility:
 
 ::
 
     $ curl -w --data 'text="Qué te pasa a ti con Iker? Diego y valdés lo estarán haciendo bien, pero que rápido olvidamos. A Mou le falta humildad."' http://127.0.0.1:8000/api/spell_checking/
 
-In the same way, a REST request can be sent using the Python's ``requests`` module.
+In the same way, requests can be sent using the Python's ``requests`` module.
 
 ::
 
