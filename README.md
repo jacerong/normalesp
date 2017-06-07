@@ -1,6 +1,8 @@
 # normalesp
 
-Source code for the paper "Lexical Normalization of Spanish Tweets" [DOI: [10.1145/2872518.2890558](http://dx.doi.org/10.1145/2872518.2890558)]. **normalesp**, as this project has been named, is released to public domain in order to enable reproducibility and to foster research on lexical normalization of texts written in Spanish, with a focus on tweets.
+Source code for paper: J. A. Cerón-Guzmán and E. León-Guzmán (2016), Lexical Normalization of Spanish Tweets. NLPIT 2016 (WWW'16 Companion). DOI: [10.1145/2872518.2890558](http://dx.doi.org/10.1145/2872518.2890558).
+
+**normalesp**, as this project has been named, is released to public domain in order to enable reproducibility and foster research on lexical normalization of texts written in Spanish, with a focus on tweets.
 
 If you use this code in research, please cite:
 
