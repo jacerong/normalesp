@@ -1,7 +1,7 @@
 0. Preliminares
 ===============
 
-Este documento de instalación se desarrolla en un entorno Debian 8 "jessie", por lo que los comandos a ingresar en consola corresponden a la sintaxis de este sistema operativo.
+Este documento de instalación se desarrolla en un entorno ``Debian 8 "jessie"``, por lo que los comandos a ingresar en consola corresponden a la sintaxis de este sistema operativo.
 
 Este proyecto utiliza las siguientes librerías de terceros, por lo que se recomienda proceder con su instalación antes de continuar con este instructivo:
 
@@ -32,13 +32,13 @@ La lista completa de módulos Python que se requieren, puede encontrarse en el a
 
 A lo largo de esta sección se describirá el proceso de estimación de un modelo de lenguaje utilizando el corpus de la Wikipedia en español. Este proceso entonces va desde la descarga de un *backup* del mencionado recurso lingüístico (ojalá el más reciente), hasta la estimación de un modelo de *trigramas*. A continuación el paso a paso:
 
-**1. Instalar ``ruby``.** Esto se consigue ingresando el siguiente comando en consola::
+**1. Instalar** ``ruby``. Esto se consigue ingresando el siguiente comando en consola::
 
     $ sudo apt-get install ruby
 
-Nótese que según la documentación de ``CorpusPedia`` [http://gramatica.usc.es/pln/tools/CorpusPedia.html], librería que se utilizará para crear un corpus base de la Wikipedia en español, la versión requerida de ``ruby`` es la ``1.9.1``. Sin embargo, esta versión no está más disponible en los repositorios de la distribución Debian 8 "jessie", por lo que se utilizará la ``2.1.5``.
+Nótese que según la documentación de ``CorpusPedia`` [http://gramatica.usc.es/pln/tools/CorpusPedia.html], librería que se utilizará para crear un corpus base de la Wikipedia en español, la versión requerida de ``ruby`` es la ``1.9.1``. Sin embargo, esta versión no está más disponible en los repositorios de la distribución ``Debian 8 "jessie"``, por lo que se utilizará la ``2.1.5``.
 
-**2. Descargar un *backup* de la Wikipedia en español.** Para ello, ingrese a la dirección electrónica ``https://dumps.wikimedia.org/eswiki/``, escoja una fecha (ojalá la más reciente) y descarge el archivo ``eswiki-YYYYMMDD-pages-articles.xml.bz2``. Tenga en cuenta que se descargarán varios *gigabytes* de información, por lo que esta descarga tomará varios minutos. Finalmente, mueva el archivo descargado a la ruta ``/normalesp/datasets/eswiki/src/`` y descomprímalo.
+**2. Descargar un backup de la Wikipedia en español**. Para ello, ingrese a la dirección electrónica ``https://dumps.wikimedia.org/eswiki/``, escoja una fecha (ojalá la más reciente) y descarge el archivo ``eswiki-YYYYMMDD-pages-articles.xml.bz2``. Tenga en cuenta que se descargarán varios *gigabytes* de información, por lo que esta descarga tomará varios minutos. Finalmente, mueva el archivo descargado a la ruta ``/normalesp/datasets/eswiki/src/`` y descomprímalo.
 
 **3. Crear un corpus de la Wikipedia en español.** Cambie el directorio a ``/normalesp/datasets/eswiki/CorpusPedia_alfa/`` e ingrese el siguiente comando: ``ruby corpuspedia.rb -c -lang:es``. Este proceso, que tal vez tomará varios minutos e incluso horas, generará como resultado el archivo ``/normalesp/datasets/eswiki/corpus/eswiki-corpus.txt``. Tenga en cuenta que este no es el corpus definitivo que se utilizará para la estimación del modelo de lenguaje, pero sí corresponde a su base.
 
