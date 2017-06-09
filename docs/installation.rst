@@ -1,7 +1,7 @@
 0. Preliminary
 ==============
 
-The installation this document guides was carried out on a ``Debian 8 "jessie"`` system, reason why the command line instructions corresponds to the syntax of this operating system.
+The installation this document guides was carried out on a ``Debian 8 "jessie"`` system, reason why the command line instructions correspond to the syntax of this operating system.
 
 This project uses the following third-party libraries / tools, and their installation is suggested before proceeding with this document:
 
@@ -30,7 +30,7 @@ The modules as listed in the ``/requirements.txt`` file.
 1. Estimating a Language Model from the Spanish Wikipedia Corpus
 ================================================================
 
-Throughout this section how to estimate a **3-gram** language model from the Spanish Wikipedia corpus is described. This process goes from downloading a backup of the Spanish Wikipedia, which can be the most recent one, to estimating the **3-gram** language model. So, with no more preamble, let's start:
+Throughout this section how to estimate a **3-gram** language model from the Spanish Wikipedia corpus is described. This process goes from downloading a backup of the Spanish Wikipedia, which can be the most recent one, to estimating a **3-gram** language model. So, with no more preamble, let's start:
 
 **0. Install** ``ruby``. This is achieved by the following command: ``$ sudo apt-get install ruby``.
 
