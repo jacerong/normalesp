@@ -84,3 +84,256 @@ Take into account that the resulting file will be put in the ``/normalesp/datase
     $ bin/build_binary /normalesp/datasets/eswiki/corpora/eswiki-corpus-3-grams.arpa /normalesp/datasets/eswiki/corpora/eswiki-corpus-3-grams.bin
 
 Finally, the ``/normalesp/datasets/eswiki/corpora/eswiki-corpus-3-grams.arpa`` file can be deleted, taking into account it will not be used anymore.
+
+2. Compilation of Finite-State Transducers
+==========================================
+
+In this section how to compile source files into finite-state transducers saved as binary files, such that the latter can be used by the main program of this project, is described. Regarding this, the former and the latter are in the ``/normalesp/datasets/transducers/src/`` and ``/normalesp/datasets/transducers/bin/`` directories, respectively. On the other hand, the ``foma`` library will be used for compilation of finite-state transducers; this library should be initiated from the source file directory.
+
+**1.** ``es-dicc``
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    read text es-dicc.txt
+    save stack es-dicc.bin
+    exit
+    $ mv es-dicc.bin /normalesp/datasets/transducers/bin/
+
+**2.** ``pnd-gazetteer``
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    read text PND-gazetteer.txt
+    save stack PND-Gazetteer.bin
+    exit
+    $ mv PND-Gazetteer.bin /normalesp/datasets/transducers/bin/
+
+**3.** ``normalization_dicc``
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    read spaced-text normalisation_dicc.txt
+    save stack normalisation_dicc.bin
+    exit
+
+The resulting binary file should not moved to the binary file directory because the former is a temporary file.
+
+**4.** ``primary_variants``
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source primary_variants.foma
+    exit
+    $ mv primary_variants.bin /normalesp/datasets/transducers/bin/
+
+**5.** ``dictionary_lookup``
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source dictionary_lookup.foma
+    exit
+    $ mv dictionary_lookup.bin /normalesp/datasets/transducers/bin/
+
+**6.** ``phonology``
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source phonology.foma
+    save stack phonology.bin
+    exit
+    $ cp phonology.bin /normalesp/datasets/transducers/bin/
+
+**7.** ``secondary_variants-dicc``
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source secondary_variants.foma
+    exit
+    $ mv secondary_variants-Dicc.bin /normalesp/datasets/transducers/bin/
+
+In order to compile this transducer 2.5G of available RAM are required. However, the binary file will require 165.5M of available RAM.
+
+**8.** ``es-verbal-forms-fonemas``
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source es-verbal-forms-fonemas.foma
+    save stack es-verbal-forms-fonemas.bin
+    exit
+    $ mv es-verbal-forms-fonemas.bin /normalesp/datasets/transducers/bin/
+
+**9.** ``es-diminutives-fonemas``
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source es-diminutives-fonemas.foma
+    save stack es-diminutives-fonemas.bin
+    exit
+    $ mv es-diminutives-fonemas.bin /normalesp/datasets/transducers/bin/
+
+**10.** ``pnd-gazetteer-fonemas``
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source PND-gazetteer-fonemas.foma
+    save stack PND-gazetteer-fonemas.bin
+    exit
+    $ mv PND-gazetteer-fonemas.bin /normalesp/datasets/transducers/bin/
+
+**11.** ``pnd-gazetteer-lowercase``
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    read text PND-gazetteer-lowercase.txt
+    save stack PND-gazetteer-lowercase.bin
+    exit
+
+The resulting binary file should not moved to the binary file directory because the former is a temporary file.
+
+**12.** ``tertiary_variants-dicc`` and ``tertiary_variants-pnd``
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source tertiary_variants.foma
+    exit
+    $ mv tertiary_variants-Dicc.bin /normalesp/datasets/transducers/bin/
+    $ mv tertiary_variants-PND.bin /normalesp/datasets/transducers/bin/
+
+In order to compile the ``tertiary_variants-dicc`` transducer 9G of available RAM are required. However, the binary file will require 1.3G of available RAM.
+
+**13.** ``pnd-gazetteer-case``
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    read spaced-text PND-gazetteer-CaSe.txt
+    save stack PND-gazetteer-CaSe.bin
+    exit
+    $ mv PND-gazetteer-CaSe.bin /normalesp/datasets/transducers/bin/
+
+**14.** ``iv-candidates-fonemas``
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source IV-candidates-fonemas.foma
+    save stack IV-candidates-fonemas.bin
+    exit
+    $ mv IV-candidates-fonemas.bin /normalesp/datasets/transducers/bin/
+
+**15.** ``split-words`` and ``other-changes``
+
+First of all, comment out the following lines in the ``/normalesp/datasets/transducers/src/tertiary_variants.foma`` file, adding the ``#`` character to the start of them::
+
+    # Variantes terciarias del diccionario estándar:
+    regex TertiaryBase1Transducer .o. StandardDicc;
+    save stack tertiary_variants-Dicc.bin
+
+    clear
+
+    regex TertiaryBase3Transducer .o. PNDGazetteer;
+    save stack tertiary_variants-PND.bin
+
+Therefore, once the lines have been commented out, they should look like as follow::
+
+    # Variantes terciarias del diccionario estándar:
+    # regex TertiaryBase1Transducer .o. StandardDicc;
+    # save stack tertiary_variants-Dicc.bin
+
+    # clear
+
+    # regex TertiaryBase3Transducer .o. PNDGazetteer;
+    # save stack tertiary_variants-PND.bin
+
+Next, compilation of finite-state transducers is proceeded.
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source split-words.foma
+    clear
+    regex OtherChanges;
+    save stack other-changes.bin
+    exit
+    $ mv split-words.bin /normalesp/datasets/transducers/bin/
+    $ mv other-changes.bin /normalesp/datasets/transducers/bin/
+
+Finally, uncomment the modified lines in the ``/normalesp/datasets/transducers/src/tertiary_variants.foma`` file. The latter should look like as follow::
+
+    # Variantes terciarias del diccionario estándar:
+    regex TertiaryBase1Transducer .o. StandardDicc;
+    save stack tertiary_variants-Dicc.bin
+
+    clear
+
+    regex TertiaryBase3Transducer .o. PNDGazetteer;
+    save stack tertiary_variants-PND.bin
+
+**16.** ``length_normalisation`` and ``length_normalisation-2``
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    regex LengtheningNormalisation;
+    save stack length_normalisation.bin
+    clear
+    regex LengtheningNormalisation2;
+    save stack length_normalisation-2.bin
+    exit
+    $ mv length_normalisation.bin /normalesp/datasets/transducers/bin/
+    $ mv length_normalisation-2.bin /normalesp/datasets/transducers/bin/
+
+**17.** ``remove_enclitic``, ``accentuate_enclitic``, and ``remove_mente``
+
+::
+
+    $ cd /normalesp/datasets/transducers/src/
+    $ /path/to/foma-0.9.18/foma
+    source affix_check.foma
+    regex RemoveEnclitic;
+    save stack remove_enclitic.bin
+    clear
+    regex AccentuateEnclitic;
+    save stack accentuate_enclitic.bin
+    clear
+    regex RemoveMente;
+    save stack remove_mente.bin
+    exit
+    $ mv remove_enclitic.bin /normalesp/datasets/transducers/bin/
+    $ mv accentuate_enclitic.bin /normalesp/datasets/transducers/bin/
+    $ mv remove_mente.bin /normalesp/datasets/transducers/bin/
+
+As a final point, the following temporary files in the ``/normalesp/datasets/transducers/src/`` directory should be deleted:
+
+- ``/normalesp/datasets/transducers/src/es-dicc.bin``.
+- ``/normalesp/datasets/transducers/src/normalisation_dicc.bin``.
+- ``/normalesp/datasets/transducers/src/phonology.bin``.
+- ``/normalesp/datasets/transducers/src/PND-gazetteer-lowercase.bin``.
