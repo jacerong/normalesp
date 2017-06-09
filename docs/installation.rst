@@ -122,7 +122,7 @@ In this section how to compile source files into finite-state transducers saved 
     save stack normalisation_dicc.bin
     exit
 
-The resulting binary file should not moved to the binary file directory because the former is a temporary file.
+The resulting binary file should not be moved to the binary file directory because the former is a temporary file.
 
 **4.** ``primary_variants``
 
@@ -210,7 +210,7 @@ In order to compile this transducer 2.5G of available RAM are required. However,
     save stack PND-gazetteer-lowercase.bin
     exit
 
-The resulting binary file should not moved to the binary file directory because the former is a temporary file.
+The resulting binary file should not be moved to the binary file directory because the former is a temporary file.
 
 **12.** ``tertiary_variants-dicc`` and ``tertiary_variants-pnd``
 
