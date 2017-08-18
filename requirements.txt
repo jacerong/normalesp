@@ -1,13 +1,13 @@
 # pip==9.0.1
-numpy
-scipy
+numpy==1.12.1
+scipy==0.19.0
 # kenlm: install the Python's kenlm module as indicated below.
 # pip install https://github.com/kpu/kenlm/archive/master.zip
-psutil
-py_common_subseq
+psutil==5.2.2
+py_common_subseq==0.1.4
 scikit-learn==0.17.1
-unidecode
-prettytable
-django
-djangorestframework
-requests
+Unidecode==0.4.20
+prettytable==0.7.2
+Django==1.11.1
+djangorestframework==3.6.3
+requests==2.14.2
