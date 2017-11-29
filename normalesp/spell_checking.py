@@ -187,8 +187,8 @@ def _switch_freeling_server(
     elif pid is None and mode == 'on':
         if (isinstance(initialization_command, str)
                 and initialization_command == 'default'):
-            subprocess.Popen(['analyze', '-f', 'es.cfg' , '--flush',
-                '--ftok', CURRENT_PATH + '/config/es-twit-tok.dat',
+            subprocess.Popen(['analyze', '-f', CURRENT_PATH + '/config/es.cfg',
+                '--flush', '--ftok', CURRENT_PATH + '/config/es-twit-tok.dat',
                 '--usr', '--fmap', CURRENT_PATH + '/config/es-twit-map.dat',
                 '--outlv', 'morfo', '--noprob', '--noloc',
                 '--server', '--port', port, '&'])
