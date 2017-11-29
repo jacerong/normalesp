@@ -306,6 +306,7 @@ Finalmente, descomente las líneas modificadas del archivo ``/normalesp/datasets
 
     $ cd /normalesp/datasets/transducers/src/
     $ /path/to/foma-0.9.18/foma
+    source lengthening_normalisation.foma
     regex LengtheningNormalisation;
     save stack length_normalisation.bin
     clear
