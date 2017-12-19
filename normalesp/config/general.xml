@@ -11,5 +11,7 @@
     <system>
         <!-- Which operating system's user will own the processes automatically started by the main program? Such as 'flookup' servers. -->
         <user></user>
+        <!-- number of CPUs -->
+        <CPU>3</CPU>
     </system>
 </config>
