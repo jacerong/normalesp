@@ -11,3 +11,4 @@ prettytable==0.7.2
 Django==1.11.1
 djangorestframework==3.6.3
 requests==2.14.2
+django-cors-headers==2.1.0
