@@ -32,6 +32,8 @@ IP_ADDRESS = config[1][1].text
 
 SYSTEM_USER = config[2][0].text
 
+NUM_WORKERS = '%i' % (2 * int(config[2][1].text) + 1)
+
 config = None
 
 ##########################
@@ -159,7 +161,8 @@ def _normalize_unknown_symbols(token):
 
 
 def _switch_freeling_server(
-        mode='on', initialization_command='default', port=FREELING_PORT):
+        mode='on', initialization_command='default', port=FREELING_PORT,
+        workers=NUM_WORKERS):
     '''Inicia/termina el servico de análisis de FreeLing.
 
     paráms:
@@ -178,8 +181,7 @@ def _switch_freeling_server(
         cmd_line = process.cmdline()
         if (process.username() == SYSTEM_USER and len(cmd_line) > 1
                 and re.search('analyzer$', cmd_line[0], re.I)
-                and (cmd_line[-1] == port
-                     or cmd_line[-2] == port)):
+                and (cmd_line[-4] == port)):
             pid = process.pid
             break
     if pid is not None and mode == 'off':
@@ -191,7 +193,7 @@ def _switch_freeling_server(
                 '--flush', '--ftok', CURRENT_PATH + '/config/es-twit-tok.dat',
                 '--usr', '--fmap', CURRENT_PATH + '/config/es-twit-map.dat',
                 '--outlv', 'morfo', '--noprob', '--noloc',
-                '--server', '--port', port, '&'])
+                '--server', '--port', port, '--workers', workers, '&'])
         elif (isinstance(initialization_command, list)
                 and len(initialization_command) > 0):
             subprocess.Popen(initialization_command)
@@ -884,7 +886,7 @@ def _are_target_words_only_proper_nouns(target_words):
     return validation
 
 
-def _suggest_target_words(word, case_type):
+def _suggest_target_words(word, case_type, external_dicc=None):
     """Sugiere variantes aceptadas (in-vocabulary) de acuerdo al token dado.
 
     Las variantes se producen en cascada; así, si no se generan candidatas en un
@@ -898,6 +900,10 @@ def _suggest_target_words(word, case_type):
             malizados a su representación en ASCII.
         case_type: int
             Cómo, en mayúsculas/minúsculas, está formada la OOV originalmente.
+        external_dicc: dict
+            Diccionario de normalización dependiente de contexto, es decir, ex-
+            terno. (Véase la explicación [1] en el método `__init__´ de la clase
+            `SpellTweet´).
     """
     # variantes normalizadas a una o dos repeticiones de la palabra
     min_length, max_length = 0, 0
@@ -919,7 +925,8 @@ def _suggest_target_words(word, case_type):
     # Se tiene en cuenta como estaba escrita originalmente.
     oov_candidates = [word]
     if case_type != 0:
-        oov_candidates.append(_recover_original_word_case_from_type(word, case_type))
+        oov_candidates.append(
+            _recover_original_word_case_from_type(word, case_type))
 
     # 1. Generación de variantes primarias:
     # (Pre:) Normalización de repetición de caracteres.
@@ -946,6 +953,15 @@ def _suggest_target_words(word, case_type):
 
     if len(target_words) > 0:
        return target_words
+    elif external_dicc is not None:
+        original_word = _recover_original_word_case_from_type(word, case_type)
+
+        external_suggestions = _foma_string_lookup(
+            original_word, 'external-dicc', external_dicc)
+        target_words = external_suggestions
+
+        if len(target_words) > 0:
+            return target_words
 
     # Dictionary lookup
     target_words = _transducers_cascade(word, ['dictionary_lookup', 'es-dicc'])
@@ -1054,8 +1070,28 @@ def _switch_normalisation_services(mode='on'):
 
 class SpellTweet(object):
     '''Analiza el texto del tweet e identifica OOV-words y sugiere correctas.'''
-    def __init__(self):
+    def __init__(self, external_dicc_ip=None, external_dicc_port=None):
+        """Instancia un modelo de normalización léxica.
+
+        paráms:
+            external_dicc_ip: str
+                Dirección IP (v4) del diccionario de normalización dependiente
+                de contexto. Nótese que tal diccionario es externo. (Véase [1]).
+            external_dicc_port: str
+                Puerto por medio de cual se reciben las solicitudes para el di-
+                ccionario de normalización.
+
+        [1] `external_dicc_ip´ y `external_dicc_port´ permiten especificar un
+        diccionario de normalización dependiente de contexto, es decir, externo.
+        Tal diccionario corresponde a un transductor de estado finito que reci-
+        be solicitudes por medio de una instancia de servidor.
+        """
         self.language_model = kenlm.LanguageModel(CORPORA['eswiki-corpus-3-grams'])
+
+        self.external_dicc = None
+        if external_dicc_ip is not None and external_dicc_port is not None:
+            self.external_dicc = {
+                'external-dicc': [None, external_dicc_ip, external_dicc_port],}
 
 
     def list_oov_words(self, morphological_analysis, include_PND=True):
@@ -1320,8 +1356,8 @@ class SpellTweet(object):
         # por cada palabra fuera de vocabulario, proponer candidatas
         pool = multiprocessing.Pool(processes=4)
         candidates = [
-            [i, pool.apply_async(_suggest_target_words, [oov_word[4], oov_word[2]])]
-            for i, oov_word in enumerate(oov_words) if len(oov_word) == 6]
+            [i, pool.apply_async(_suggest_target_words, [oov_word[4], oov_word[2], self.external_dicc])]
+             for i, oov_word in enumerate(oov_words) if len(oov_word) == 6]
         pool.close()
         pool.join()
 
