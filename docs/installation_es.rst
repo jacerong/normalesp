@@ -103,7 +103,7 @@ El objetivo de esta sección es describir cómo compilar los archivos fuentes de
     read text es-dicc.txt
     save stack es-dicc.bin
     exit
-    $ mv es-dicc.bin /normalesp/datasets/transducers/bin/
+    $ cp es-dicc.bin /normalesp/datasets/transducers/bin/
 
 **2.** ``pnd-gazetteer``
 
