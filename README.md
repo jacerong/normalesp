@@ -21,7 +21,7 @@ If you use this software in research, please cite:
 
 ## Compatibility
 
-**normalesp** has been developed in `Python 2.7` and on `Debian 7 "wheezy"`. It has been tested on both `Debian 7 "wheezy"` and `Debian 8 "jessie"`. Because of this, **normalesp** should successfully run on a Linux system.
+**normalesp** has been developed in `Python 2.7` and on `Debian 7 "wheezy"`. It has been tested on `Debian 7 "wheezy"`, `Debian 8 "jessie"`, and `Debian 9 "Stretch"`. Because of this, **normalesp** should successfully run on a Linux system.
 
 ## Installation and Usage
 
