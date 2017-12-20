@@ -64,7 +64,7 @@ Having said the above, the methods to use the spell checking program are describ
 
 **2. REST API**
 
-A REST API has been developed using `Django <https://www.djangoproject.com/>`_ and the `Django REST framework <http://www.django-rest-framework.org/>`_. The idea is to enable application integration using REST. It is important to note that server setup is beyond the scope of this document, so it is assumed that the REST API is running (please see [#]_ and [#]_).
+A REST API has been developed using `Django <https://www.djangoproject.com/>`_ and the `Django REST framework <http://www.django-rest-framework.org/>`_.[#]_ The idea is to enable application integration using REST. It is important to note that server setup is beyond the scope of this document, so it is assumed that the REST API is running (please see [#]_ and [#]_).
 
 Requests can be sent to the REST API using the ``curl`` command-line utility:
 
@@ -87,6 +87,14 @@ In the same way, requests can be sent using the Python's ``requests`` module.
      [1, 0, u'Diego', u'Diego', [u'Diego']],
      ...,
      [2, 1, u'Mou', u'Mou', [u'Mou', u'mou']]]
+
+.. [#] As a default setting, the REST API will deny permission to any unauthenticated user. To allow unrestricted access, the following line in the ``/api/views.py`` file::
+
+    @permission_classes((IsAuthenticated, ))
+
+    should be changed by::
+
+    @permission_classes((AllowAny, ))
 
 .. [#] For testing purposes, you can use the Django's `runserver <https://docs.djangoproject.com/en/1.11/ref/django-admin/#runserver>`_ utility.
 .. [#] The author recommends `this <https://www.howtoforge.com/tutorial/how-to-install-django-with-postgresql-and-nginx-on-ubuntu-16-04/>`_ tutorial to setup a server using Gunicorn, Supervisor, and Nginx.
