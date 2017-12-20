@@ -100,8 +100,8 @@ ACCENTED_VOWELS_RE = re.compile(u'''[\xe1\xe9\xed\xf3\xfa]''', re.I|re.U)
 
 ONE_LETTER_WORDS = [u'a', u'e', u'o', u'u', u'y']
 
-TWO_LETTER_WORDS = [u'al', u'ah', u'ay',
-    u'da', u'de', 'dé'.decode('utf-8'), u'di',
+TWO_LETTER_WORDS = [u'ah', u'al', u'ay',
+    u'da', u'de', 'dé'.decode('utf-8'), u'di', 'dí'.decode('utf-8'),
     u'eh', u'el', 'él'.decode('utf-8'), u'en', u'es', u'ex',
     u'fe',
     u'ha', u'he',
@@ -109,11 +109,12 @@ TWO_LETTER_WORDS = [u'al', u'ah', u'ay',
     u'ja', u'je', u'ji', u'jo', u'ju',
     u'la', u'le', u'lo',
     u'me', u'mi', 'mí'.decode('utf-8'),
-    u'oh', u'os',
-    u'se', 'sé'.decode('utf-8'), u'si', 'sí'.decode('utf-8'),
+    u'ni', u'no',
+    u'oh', 'oí'.decode('utf-8'), u'ok', u'os',
+    u'se', 'sé'.decode('utf-8'), u'si', 'sí'.decode('utf-8'), u'su',
     u'te', 'té'.decode('utf-8'), u'ti', u'tu', 'tú'.decode('utf-8'),
-    u'uf', u'uh', u'un',
-    u'va', u've', u'vi',
+    u'uf', u'uh', u'un', u'uy',
+    u'va', u've', 'vé'.decode('utf-8'), u'vi',
     u'ya', u'yo']
 
 
@@ -1260,7 +1261,17 @@ class SpellTweet(object):
 
             for oov_id, candidate in combination.iteritems():
                 t = t.replace('{' + oov_id + '}', candidate.replace('_', ' '))
-            ppl_value = self.language_model.score(t)
+
+            # si solo se va a normalizar un token, des-
+            # activar el inicio y fin de la oración
+            bos = True
+            eos = True
+
+            if len(t.split(' ')) == 1:
+                bos = False
+                eos = False
+
+            ppl_value = self.language_model.score(t, bos=bos, eos=eos)
 
             if max_ppl_value == 1000 or ppl_value > max_ppl_value:
                 best_combination = combination
