@@ -64,7 +64,7 @@ Having said the above, the methods to use the spell checking program are describ
 
 **2. REST API**
 
-A REST API has been developed using `Django <https://www.djangoproject.com/>`_ and the `Django REST framework <http://www.django-rest-framework.org/>`_.[#]_ The idea is to enable application integration using REST. It is important to note that server setup is beyond the scope of this document, so it is assumed that the REST API is running (please see [#]_ and [#]_).
+A REST API has been developed using `Django <https://www.djangoproject.com/>`_ and the `Django REST framework <http://www.django-rest-framework.org/>`_. The idea is to enable application integration using REST. It is important to note that server setup is beyond the scope of this document, so it is assumed that the REST API is running (please see [#]_, [#]_, and [#]_).
 
 Requests can be sent to the REST API using the ``curl`` command-line utility:
 
