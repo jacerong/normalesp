@@ -1239,6 +1239,8 @@ class SpellTweet(object):
 
         tweet = tweet.strip().replace(u'  ', u' ').replace(u'jajaja', u'ja')
 
+        possible_concatenated_words = False
+
         param_grid = {}
         for i, oov_word in enumerate(oov_words):
             if len(oov_word[6]) == 1 and oov_word[6][0] != '%EMO':
@@ -1248,6 +1250,10 @@ class SpellTweet(object):
                 oov_words[i][6] = [oov_word[3]]
             else:
                 param_grid['OOV-%i' % (i + 1)] = np.unique(oov_word[-1]).tolist()
+                if not possible_concatenated_words:
+                    for candidate in param_grid['OOV-%i' % (i + 1)]:
+                        if '_' in candidate:
+                            possible_concatenated_words = True
 
         grid = ParameterGrid(param_grid)
         complete_search = True
@@ -1267,7 +1273,7 @@ class SpellTweet(object):
             bos = True
             eos = True
 
-            if len(t.split(' ')) == 1:
+            if len(t.split(' ')) == 1 and not possible_concatenated_words:
                 bos = False
                 eos = False
 
